@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta content="width=device-width, initial-scale=1" name="viewport"/>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
+    <script th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js}"></script>
+    <script th:src="@{https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+    <title>Create test</title>
+</head>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var form;
+
+    function addBr() {
+        form.appendChild(document.createElement('br'));
+    }
+
+    function addInput(name, placeholder) {
+        var inputName = document.createElement('input');
+        inputName.setAttribute("placeholder", placeholder);
+        inputName.setAttribute("name", name);
+        addBr();
+        return inputName;
+    }
+
+    var counter = 0;
+    $(document).ready(function () {
+        $('#add-question-button').click(function () {
+            form = document.createElement('form');
+            form.setAttribute("style", "border:2px solid black;");
+
+            var delButton = document.getElementById("add-answer-button");
+            if (delButton != null) {
+                delButton.parentNode.removeChild(delButton);
+            }
+
+            var inputName = addInput("inputName", "Enter name");
+            var inputCorrect = addInput("correctAnswerName", "Enter correct answer");
+
+            var addAnswerButton = document.createElement('button');
+            addAnswerButton.setAttribute("id", "add-answer-button");
+
+            addAnswerButton.onclick = function () {
+                var count = 0;
+                addBr();
+                var inputAnswer = document.createElement('input');
+                inputAnswer.setAttribute("id", "answer-input" + counter + count);
+                inputAnswer.setAttribute("placeholder", "Enter answer");
+                inputAnswer.setAttribute("name", "answer");
+                form.appendChild(inputAnswer);
+                return false;
+            };
+
+            addAnswerButton.innerHTML = "add answer";
+
+            form.appendChild(inputName);
+            addBr();
+            form.appendChild(inputCorrect);
+            addBr();
+            form.appendChild(addAnswerButton)
+            addBr();
+            document.getElementById('questions').appendChild(form);
+            document.getElementById('questions').appendChild(document.createElement("br"));
+            counter++;
+        });
+
+        // $('#add-answer-button').click(function () {
+        //     var input = document.createElement('input');
+        //     input.setAttribute("placeholder", "Enter answer");
+        //     input.setAttribute("name", "answer");
+        // });
+    });
+    /*]]>*/
+
+</script>
+<body>
+
+
+<form>
+    <h3>Enter name : </h3>
+    <input name="name"/>
+</form>
+<br/>
+<div>
+
+    <div id="questions">
+    </div>
+    <br/>
+    <button id="add-question-button">Add question</button>
+
+
+</div>
+</body>
+</html>

@@ -1,0 +1,38 @@
+package org.school.app.controller;
+
+import org.school.app.dto.TestBoxDTO;
+import org.school.app.service.TestBoxService;
+import org.school.app.utils.DtoUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+public class ManagementController {
+
+	@Autowired TestBoxService testBoxService;
+
+	@ResponseStatus(HttpStatus.CREATED)
+	@PostMapping("/v1/tests")
+	public void createTestBox(@RequestBody TestBoxDTO dto){
+		testBoxService.createTestBox(dto);
+	}
+
+	@GetMapping("/v1/tests")
+	public Page<TestBoxDTO> getTestBoxes(Pageable pageable) {
+		return testBoxService.getTestBoxes(pageable).map(DtoUtil::testBox);
+	}
+
+	@GetMapping("/v1/tests/{testId}")
+	public TestBoxDTO getTestBox(@PathVariable String testId) {
+		return DtoUtil.testBox(testBoxService.getTextBox(testId));
+	}
+
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ExceptionHandler(IllegalArgumentException.class)
+	public ErrorResponse handleIllegalArgument(IllegalArgumentException e) {
+		return new ErrorResponse("INVALID_ID", e.getMessage());
+	}
+}
