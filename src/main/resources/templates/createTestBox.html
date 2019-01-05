@@ -10,10 +10,10 @@
 </head>
 <script th:inline="javascript">
     /*<![CDATA[*/
-    var form;
+    var question;
 
     function addBr() {
-        form.appendChild(document.createElement('br'));
+        question.appendChild(document.createElement('br'));
     }
 
     function addInput(name, placeholder) {
@@ -25,71 +25,137 @@
     }
 
     var counter = 0;
+    var countAnswer = 0;
+
     $(document).ready(function () {
+
         $('#add-question-button').click(function () {
-            form = document.createElement('form');
-            form.setAttribute("style", "border:2px solid black;");
+            countAnswer = 0;
+            question = document.createElement('form');
+            question.setAttribute("style", "border:2px solid black;");
+            question.setAttribute("id", "question" + counter);
+
 
             var delButton = document.getElementById("add-answer-button");
             if (delButton != null) {
                 delButton.parentNode.removeChild(delButton);
             }
 
-            var inputName = addInput("inputName", "Enter name");
-            var inputCorrect = addInput("correctAnswerName", "Enter correct answer");
+            var inputName = addInput("name", "Enter name");
+            var inputCorrect = addInput("correctAnswer", "Enter correct answer");
 
             var addAnswerButton = document.createElement('button');
-            addAnswerButton.setAttribute("id", "add-answer-button");
+            processAddAnswer(addAnswerButton);
 
-            addAnswerButton.onclick = function () {
-                var count = 0;
-                addBr();
-                var inputAnswer = document.createElement('input');
-                inputAnswer.setAttribute("id", "answer-input" + counter + count);
-                inputAnswer.setAttribute("placeholder", "Enter answer");
-                inputAnswer.setAttribute("name", "answer");
-                form.appendChild(inputAnswer);
-                return false;
-            };
 
-            addAnswerButton.innerHTML = "add answer";
+            question.appendChild(inputName);
+            addBr();
+            question.appendChild(inputCorrect);
+            addBr();
+            question.appendChild(addAnswerButton)
 
-            form.appendChild(inputName);
             addBr();
-            form.appendChild(inputCorrect);
-            addBr();
-            form.appendChild(addAnswerButton)
-            addBr();
-            document.getElementById('questions').appendChild(form);
-            document.getElementById('questions').appendChild(document.createElement("br"));
+
+            appendChildId("questions", question);
+            appendChildId("questions", document.createElement("br"))
             counter++;
+            return false;
         });
 
-        // $('#add-answer-button').click(function () {
-        //     var input = document.createElement('input');
-        //     input.setAttribute("placeholder", "Enter answer");
-        //     input.setAttribute("name", "answer");
-        // });
+        // Creating test box
+        $('#create-test-box').click(function () {
+            var els = [];
+            for (var i = 0; i < counter; i++) {
+                var el = ($("#question" + i).serializeArray());
+                el = objectifyForm(el);
+                els.push(el);
+            }
+            var ret = {
+                name: $("#tb-name").val(),
+                questions : els
+            };
+            sendRequest('/v1/tests', ret, 'POST');
+
+        });
     });
+
+
+    function objectifyForm(formArray) {//serialize data function
+
+        var returnArray = {};
+
+
+        for (var i = 0; i < formArray.length; i++) {
+            returnArray[formArray[i]['name']] = formArray[i]['value'];
+        }
+
+        var obj = new Question(returnArray);
+
+        for (i = 0; i < formArray.length; i++) {
+            if (formArray[i]['name'].localeCompare("answers") === 0) {
+                obj.answers.push(formArray[i]['value']);
+            }
+        }
+
+        return obj;
+    }
+
+    function Question(returnArray) {
+        this.name = returnArray.name;
+        this.correctAnswer = returnArray.correctAnswer;
+        this.answers = [];
+    }
+
+    function appendChildId(id, el) {
+        document.getElementById(id).appendChild(el);
+    }
+
+    function sendRequest(url, data, type) {
+        $.ajax({
+            url: url,
+            data: JSON.stringify(data),
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            type: type
+        }).done(function (res) {
+            // do stuff
+        });
+    }
+
+    function processAddAnswer(addAnswerButton) {
+        addAnswerButton.setAttribute("id", "add-answer-button");
+        addAnswerButton.innerHTML = "add answer";
+        addAnswerButton.onclick = function () {
+            addBr();
+            var inputAnswer = document.createElement('input');
+            inputAnswer.setAttribute("id", "answer-input" + counter + countAnswer);
+            inputAnswer.setAttribute("placeholder", "Enter answer");
+            inputAnswer.setAttribute("name", "answers");
+            question.appendChild(inputAnswer);
+            countAnswer++;
+            return false;
+        };
+    }
+
+
     /*]]>*/
 
 </script>
 <body>
 
 
-<form>
+<form id="form">
     <h3>Enter name : </h3>
-    <input name="name"/>
-</form>
-<br/>
-<div>
+    <input name="name" id="tb-name"/>
+
+    <br/>
 
     <div id="questions">
     </div>
     <br/>
     <button id="add-question-button">Add question</button>
+    <button type="button" class="btn btn-primary" id="create-test-box">Create test box</button>
 
-
-</div>
+</form>
 </body>
 </html>
