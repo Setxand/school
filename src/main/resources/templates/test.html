@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta content="width=device-width, initial-scale=1" name="viewport"/>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
+    <script th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js}"></script>
+    <script th:src="@{https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+    <title>Test</title>
+</head>
+<style>
+    .answer {
+        color: gray;
+        cursor: pointer;
+    }
+
+    .answer:hover {
+        color: black;
+    }
+
+    #test-block {
+        font-size: 45px;
+        color: gray;
+    }
+</style>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var counter = 0;
+    var qns;
+
+    $(document).ready(function () {
+
+
+        $.ajax({
+            url: "/v1/tests/" + [[${testId}]],
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            type: "GET",
+            success: function (res) {
+                qns = res.questions;
+                parseQuestions();
+            }
+        });
+
+        function appendCh(id, el) {
+            document.getElementById(id).appendChild(el);
+        }
+
+        $("#test-block").on('click', 'h5.answer', function () {
+            parseQuestions();
+        });
+
+        function parseQuestions() {
+            var elem = document.getElementById("test-block");
+            if (elem != null)
+                while (elem.firstChild) {
+                    elem.removeChild(elem.firstChild);
+                }
+
+            var question = qns[counter];
+
+            if (counter < Object.keys(qns).length) {
+
+                var p = document.createElement("h3");
+                p.setAttribute("id", "question-tmp");
+                p.innerHTML = question.name;
+                appendCh("test-block", p);
+
+                for (var i = 0; i < Object.keys(question.answers).length; i++) {
+                    var answer = document.createElement("h5");
+                    answer.innerHTML = question.answers[i];
+                    answer.setAttribute("class", "answer");
+                    answer.setAttribute("id", "question-tmp");
+                    appendCh("test-block", answer);
+                }
+
+                counter++;
+
+            } else {
+
+                $("#test-block").text("The end!");
+
+            }
+        }
+    });
+
+    /*]]>*/
+
+</script>
+<body>
+
+<div class="container">
+    <h2>Test</h2>
+    <div id="test-block"></div>
+
+</div>
+
+</body>
+</html>

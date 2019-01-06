@@ -8,12 +8,53 @@
     <script th:src="@{https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
     <title>Create test</title>
 </head>
+<style>
+    #test-id {
+        color: gray;
+        cursor: pointer;
+    }
+
+    #test-id:hover {
+        color: black;
+    }
+</style>
 <script th:inline="javascript">
+    $(document).ready(function () {
+
+        $.ajax({
+
+            url: "/v1/tests",
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            type: "GET",
+            success: function (data) {
+                var content = data.content;
+
+                for (var i = 0; i < Object.keys(data).length; i++) {
+                    var div = document.createElement("div");
+                    div.setAttribute("id", "test-id");
+                    var h3 = document.createElement("h3");
+                    h3.innerHTML = content[i].name;
+                    h3.setAttribute("onclick", "startTest('" + content[i].id + "')");
+
+                    div.appendChild(h3);
+                    document.getElementById("test-box-list").appendChild(div);
+                }
+            }
+        });
+
+
+    });
+
+    function startTest(id) {
+        window.location.href = "/test/" + id;
+    }
+
 </script>
 <body>
 <div class="container">
     <h3>Choose a test box :</h3>
-
+    <div id="test-box-list"></div>
 </div>
 
 

@@ -75,7 +75,7 @@
                 questions : els
             };
             sendRequest('/v1/tests', ret, 'POST');
-
+            redirectToCatalog();
         });
     });
 
@@ -116,10 +116,15 @@
             data: JSON.stringify(data),
             dataType: "json",
             contentType: "application/json; charset=utf-8",
-            type: type
-        }).done(function (res) {
-            // do stuff
-        });
+            type: type,
+            success : function () {
+
+            }
+        })
+    }
+
+    function redirectToCatalog() {
+        window.location.href = "/catalog"
     }
 
     function processAddAnswer(addAnswerButton) {

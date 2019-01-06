@@ -6,6 +6,8 @@ import org.school.app.utils.DtoUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +23,8 @@ public class ManagementController {
 	}
 
 	@GetMapping("/v1/tests")
-	public Page<TestBoxDTO> getTestBoxes(Pageable pageable) {
+	public Page<TestBoxDTO> getTestBoxes(@SortDefault(sort = "createdAt", direction = Sort.Direction.DESC)
+													 							Pageable pageable) {
 		return testBoxService.getTestBoxes(pageable).map(DtoUtil::testBox);
 	}
 
