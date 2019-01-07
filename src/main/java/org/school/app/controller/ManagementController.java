@@ -24,13 +24,19 @@ public class ManagementController {
 
 	@GetMapping("/v1/tests")
 	public Page<TestBoxDTO> getTestBoxes(@SortDefault(sort = "createdAt", direction = Sort.Direction.DESC)
-													 							Pageable pageable) {
+													 												Pageable pageable) {
 		return testBoxService.getTestBoxes(pageable).map(DtoUtil::testBox);
 	}
 
 	@GetMapping("/v1/tests/{testId}")
 	public TestBoxDTO getTestBox(@PathVariable String testId) {
 		return DtoUtil.testBox(testBoxService.getTextBox(testId));
+	}
+
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@DeleteMapping("/v1/tests/{testId}")
+	public void deleteTestBot(@PathVariable String testId) {
+		testBoxService.deleteTestBox(testId);
 	}
 
 	@ResponseStatus(HttpStatus.BAD_REQUEST)

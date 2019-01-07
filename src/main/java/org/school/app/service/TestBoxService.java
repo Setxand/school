@@ -39,6 +39,10 @@ public class TestBoxService {
 		return boxRepo.findById(testId).orElseThrow(() -> new IllegalArgumentException("Invalid test box ID"));
 	}
 
+	public void deleteTestBox(String testId) {
+		boxRepo.deleteById(testId);
+	}
+
 	private Question createQuestion(QuestionDTO q) {
 		Question question = new Question();
 		question.setName(q.name);

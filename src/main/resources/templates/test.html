@@ -19,17 +19,18 @@
     }
 
     #test-block {
-        font-size: 45px;
+        font-size: 25px;
         color: gray;
     }
 </style>
 <script th:inline="javascript">
     /*<![CDATA[*/
-    var counter = 0;
-    var qns;
+    var QuestionCounter = 0;
+    var allQuestions;
+    var mark = 0;
+    var answersArr = [];
 
     $(document).ready(function () {
-
 
         $.ajax({
             url: "/v1/tests/" + [[${testId}]],
@@ -37,35 +38,48 @@
             contentType: "application/json; charset=utf-8",
             type: "GET",
             success: function (res) {
-                qns = res.questions;
+                allQuestions = res.questions;
                 parseQuestions();
             }
         });
+
 
         function appendCh(id, el) {
             document.getElementById(id).appendChild(el);
         }
 
-        $("#test-block").on('click', 'h5.answer', function () {
+        $("#test-block").on('click', 'h5.answer', function (clickedElement) {
+            var currentAnswer = $(clickedElement.target).text();
+            answersArr.push(currentAnswer);
+
+            // if currentAnswer equals correctAnswer
+            if (currentAnswer.substr(0, 2).localeCompare(allQuestions[QuestionCounter - 1].correctAnswer) === 0) {
+                mark++;
+            }
+
             parseQuestions();
         });
 
         function parseQuestions() {
+
+            // Deleting prev question
             var elem = document.getElementById("test-block");
             if (elem != null)
                 while (elem.firstChild) {
                     elem.removeChild(elem.firstChild);
                 }
 
-            var question = qns[counter];
+            var question = allQuestions[QuestionCounter];
 
-            if (counter < Object.keys(qns).length) {
+            if (QuestionCounter < Object.keys(allQuestions).length) {
 
+                // Appending question
                 var p = document.createElement("h3");
                 p.setAttribute("id", "question-tmp");
                 p.innerHTML = question.name;
                 appendCh("test-block", p);
 
+                // Appending answers
                 for (var i = 0; i < Object.keys(question.answers).length; i++) {
                     var answer = document.createElement("h5");
                     answer.innerHTML = question.answers[i];
@@ -74,26 +88,65 @@
                     appendCh("test-block", answer);
                 }
 
-                counter++;
+                QuestionCounter++;
 
             } else {
 
-                $("#test-block").text("The end!");
+                $("#test-block").text("Тест закінчився! Оцінка : " + mark);
+
+                for (var j = 0; j < Object.keys(allQuestions).length; j++) {
+                    question = allQuestions[j];
+
+                    // Appending question
+                    p = document.createElement("h3");
+                    p.setAttribute("id", "question-tmp");
+                    p.innerHTML = question.name;
+                    appendCh("test-block", p);
+
+                    // Appending answers
+                    for (i = 0; i < Object.keys(question.answers).length; i++) {
+                        answer = document.createElement("h5");
+                        answer.innerHTML = question.answers[i];
+                        answer.setAttribute("id", "question-tmp");
+                        appendCh("test-block", answer);
+                    }
+
+                    // Append comments to answers
+                    var comment = document.createElement("p");
+                    var comment2 = document.createElement("p");
+                    comment.innerHTML = "Ваша відповідь : " + answersArr[j].substr(0, 2);
+                    comment2.innerHTML = "Вірна відповідь : " + question.correctAnswer;
+
+                    if (answersArr[j].substr(0, 2).localeCompare(question.correctAnswer) === 0) {
+
+                        comment.setAttribute("style", "color:green;");
+
+                    } else comment.setAttribute("style", "color:red;");
+
+                    comment2.setAttribute("style", "color:orange;");
+                    appendCh("test-block", comment);
+                    appendCh("test-block", comment2);
+                }
+
+                // Return button
+                var bndRet = $('<button class="btn btn-primary" id="retButton" onclick="redirectCatalog()"/>').appendTo("#test-block");
+                bndRet.text("На головну");
 
             }
         }
     });
 
-    /*]]>*/
+    function redirectCatalog() {
+        window.location.href = "/catalog"
+    }
 
+    /*]]>*/
 </script>
 <body>
 
 <div class="container">
-    <h2>Test</h2>
     <div id="test-block"></div>
 
 </div>
-
 </body>
 </html>

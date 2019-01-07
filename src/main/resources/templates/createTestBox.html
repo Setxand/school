@@ -10,6 +10,8 @@
 </head>
 <script th:inline="javascript">
     /*<![CDATA[*/
+    var alph = ['а', 'б','в','г','д','е','є','ж','з','и','і','ї'];
+
     var question;
 
     function addBr() {
@@ -41,8 +43,8 @@
                 delButton.parentNode.removeChild(delButton);
             }
 
-            var inputName = addInput("name", "Enter name");
-            var inputCorrect = addInput("correctAnswer", "Enter correct answer");
+            var inputName = addInput("name", "Назва питання");
+            var inputCorrect = addInput("correctAnswer", "Корректна відповідь");
 
             var addAnswerButton = document.createElement('button');
             processAddAnswer(addAnswerButton);
@@ -52,12 +54,12 @@
             addBr();
             question.appendChild(inputCorrect);
             addBr();
-            question.appendChild(addAnswerButton)
+            question.appendChild(addAnswerButton);
 
             addBr();
 
             appendChildId("questions", question);
-            appendChildId("questions", document.createElement("br"))
+            appendChildId("questions", document.createElement("br"));
             counter++;
             return false;
         });
@@ -72,7 +74,7 @@
             }
             var ret = {
                 name: $("#tb-name").val(),
-                questions : els
+                questions: els
             };
             sendRequest('/v1/tests', ret, 'POST');
             redirectToCatalog();
@@ -117,7 +119,7 @@
             dataType: "json",
             contentType: "application/json; charset=utf-8",
             type: type,
-            success : function () {
+            success: function () {
 
             }
         })
@@ -129,13 +131,14 @@
 
     function processAddAnswer(addAnswerButton) {
         addAnswerButton.setAttribute("id", "add-answer-button");
-        addAnswerButton.innerHTML = "add answer";
+        addAnswerButton.innerHTML = "Додати відповідь";
         addAnswerButton.onclick = function () {
             addBr();
             var inputAnswer = document.createElement('input');
             inputAnswer.setAttribute("id", "answer-input" + counter + countAnswer);
-            inputAnswer.setAttribute("placeholder", "Enter answer");
+            inputAnswer.setAttribute("placeholder", "Введіть відповідь");
             inputAnswer.setAttribute("name", "answers");
+            inputAnswer.value = alph[countAnswer] + ") ";
             question.appendChild(inputAnswer);
             countAnswer++;
             return false;
@@ -150,7 +153,7 @@
 
 
 <form id="form">
-    <h3>Enter name : </h3>
+    <h3>Введіть назву тесту : </h3>
     <input name="name" id="tb-name"/>
 
     <br/>
@@ -158,8 +161,8 @@
     <div id="questions">
     </div>
     <br/>
-    <button id="add-question-button">Add question</button>
-    <button type="button" class="btn btn-primary" id="create-test-box">Create test box</button>
+    <button id="add-question-button">Додати питання</button>
+    <button type="button" class="btn btn-primary" id="create-test-box">Створити тест</button>
 
 </form>
 </body>

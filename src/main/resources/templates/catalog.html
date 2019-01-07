@@ -9,17 +9,21 @@
     <title>Create test</title>
 </head>
 <style>
-    #test-id {
+    #test-id h3{
         color: gray;
         cursor: pointer;
     }
 
-    #test-id:hover {
+    #test-id h3:hover {
         color: black;
     }
 </style>
 <script th:inline="javascript">
+
     $(document).ready(function () {
+
+        $('<a href="/create-test">Створити тест</a>').appendTo("body");
+
 
         $.ajax({
 
@@ -36,8 +40,15 @@
                     var h3 = document.createElement("h3");
                     h3.innerHTML = content[i].name;
                     h3.setAttribute("onclick", "startTest('" + content[i].id + "')");
+                    h3.setAttribute("style", "display:inline-block;");
 
                     div.appendChild(h3);
+
+                    $("<button id='del-button'>Видалити</button>").attr({
+                        onclick: "deleteTestBox('" + content[i].id + "')",
+                        style: "display:inline-block; margin-left:20px;"
+                    }).appendTo(div);
+
                     document.getElementById("test-box-list").appendChild(div);
                 }
             }
@@ -46,14 +57,32 @@
 
     });
 
+    function deleteTestBox(id) {
+        if (confirm('Ви точно хочете видалити тест?')) {
+            // Save it!
+            $.ajax({
+                url: "/v1/tests/" + id,
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                type: 'DELETE',
+                success: function () {
+
+                }
+            });
+            window.location.reload();
+        } else {
+            // Do nothing!
+        }
+
+    }
+
     function startTest(id) {
         window.location.href = "/test/" + id;
     }
-
 </script>
 <body>
 <div class="container">
-    <h3>Choose a test box :</h3>
+    <h3>Виберіть пак завдання для іспиту :</h3>
     <div id="test-box-list"></div>
 </div>
 
