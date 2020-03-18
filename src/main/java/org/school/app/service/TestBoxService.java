@@ -10,6 +10,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static java.util.stream.Collectors.toList;
 
 @Service
@@ -41,6 +43,10 @@ public class TestBoxService {
 
 	public void deleteTestBox(String testId) {
 		boxRepo.deleteById(testId);
+	}
+
+	public List<TestBox> getTestBoxesByName(String name) {
+		return boxRepo.findByName(name);
 	}
 
 	private Question createQuestion(QuestionDTO q) {
