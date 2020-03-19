@@ -36,10 +36,18 @@ public class MessageService {
 				typeTestBox(message, user);
 				break;
 
+			case NEXT_QUESTION:
+				nextQuestion(message, user);
+				break;
+
 			default:
 				throw new BotException(message);
 		}
 
+	}
+
+	private void nextQuestion(Message message, User user) {
+		testService.nextQuestion(message, user);
 	}
 
 	private void typeTestBox(Message message, User user) {

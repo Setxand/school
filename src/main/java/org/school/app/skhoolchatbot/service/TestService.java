@@ -15,6 +15,7 @@ import telegram.Message;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.school.app.skhoolchatbot.config.DictionaryKeysConfig.TEST_ENDED;
 import static org.school.app.skhoolchatbot.config.DictionaryKeysConfig.TYPE_TEST_BOX_DICTIONARY;
 import static org.school.app.skhoolchatbot.model.User.UserStatus.CHOOSE_TEST_BOX_USTATUS;
 import static org.school.app.skhoolchatbot.model.User.UserStatus.TYPE_TEST_BOX_USTATUS;
@@ -51,21 +52,42 @@ public class TestService {
 
 		testProcess.setCurrentTestId(testBoxId);
 		testProcess.setCurrentTestStep(0);
-		testProcess.getTestHistory().add(testBoxId);
+		testProcess.setMark(0);
+//		testProcess.getTestHistory().add(testBoxId);
 
-		nextQuestion(callBackQuery, user, testProcess);
+		user.setStatus(User.UserStatus.NEXT_QUESTION);
+		nextQuestion(callBackQuery.getMessage(), user);
 	}
 
-	public void nextQuestion(CallBackQuery callBackQuery, User user, TestProcess testProcess) {
+	public void nextQuestion(Message message, User user) {
+		TestProcess testProcess = user.getTestProcess();
 		TestBox testBox = testBoxService.getTestBox(testProcess.getCurrentTestId());
 
+		if (testProcess.getCurrentTestStep() == testBox.getQuestions().size()) {
+			testEnded(message, user, testProcess);
+			user.setStatus(null);
+			return;
+		}
 
 		Question question = testBox.getQuestions().get(testProcess.getCurrentTestStep());
 
-		Message message = callBackQuery.getMessage();
+		if (user.getStatus() == User.UserStatus.NEXT_QUESTION) {
+			checkAnswer(message, testProcess, question);
+		}
 
 		telegramClient.sendQuestion(question, message);
-
 		testProcess.setCurrentTestStep(testProcess.getCurrentTestStep() + 1);
+	}
+
+	private void checkAnswer(Message message, TestProcess testProcess, Question question) {
+
+		if (question.getCorrectAnswer().equals(message.getText().substring(0, 2))) {
+			testProcess.setMark(testProcess.getMark() + 1);
+		}
+	}
+
+	private void testEnded(Message message, User user, TestProcess testProcess) {
+		String text = String.format(DictionaryUtil.getDictionaryValue(TEST_ENDED), testProcess.getMark());
+		telegramClient.simpleMessage(text, message);
 	}
 }

@@ -20,6 +20,8 @@ public class TestProcess {
 	private Integer chatId;
 	private String currentTestId;
 	private int currentTestStep;
+	private int mark;
+
 	@ElementCollection
 	private Set<String> testHistory = new HashSet<>();
 

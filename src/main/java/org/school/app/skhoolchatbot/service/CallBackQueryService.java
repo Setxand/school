@@ -21,10 +21,8 @@ public class CallBackQueryService {
 
 		if (user.getStatus() != null) {
 			checkByStatus(callBackQuery, user);
-			return;
-		}
-
-		throw new BotException(callBackQuery.getMessage());
+		} else
+			throw new BotException(callBackQuery.getMessage());
 	}
 
 	private void checkByStatus(CallBackQuery callBackQuery, User user) {

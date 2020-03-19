@@ -21,7 +21,8 @@ public class User {
 
 	public enum UserStatus {
 		CHOOSE_TEST_BOX_USTATUS,
-		TYPE_TEST_BOX_USTATUS
+		TYPE_TEST_BOX_USTATUS,
+		NEXT_QUESTION
 	}
 
 	@Enumerated(EnumType.STRING)
