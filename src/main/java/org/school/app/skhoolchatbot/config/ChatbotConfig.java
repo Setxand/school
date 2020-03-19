@@ -7,10 +7,10 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConfigurationProperties(prefix = "url")
+@ConfigurationProperties(prefix = "chatbot")
 @Getter
 @Setter
-public class UrlConfig {
+public class ChatbotConfig {
 
 	private String server;
 	private String webhook;

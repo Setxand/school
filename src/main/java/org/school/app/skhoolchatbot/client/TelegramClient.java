@@ -2,7 +2,7 @@ package org.school.app.skhoolchatbot.client;
 
 import org.school.app.model.Question;
 import org.school.app.model.TestBox;
-import org.school.app.skhoolchatbot.config.UrlConfig;
+import org.school.app.skhoolchatbot.config.ChatbotConfig;
 import org.springframework.stereotype.Component;
 import telegram.Markup;
 import telegram.Message;
@@ -13,7 +13,7 @@ import java.util.List;
 @Component
 public class TelegramClient extends telegram.client.TelegramClient {
 
-	public TelegramClient(UrlConfig config) {
+	public TelegramClient(ChatbotConfig config) {
 		super(config.getServer(), config.getWebhook(), config.getTelegramUrls());
 	}
 
