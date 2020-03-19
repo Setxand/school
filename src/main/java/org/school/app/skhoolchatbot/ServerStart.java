@@ -1,6 +1,6 @@
-package org.school.app.tennisapp;
+package org.school.app.skhoolchatbot;
 
-import org.school.app.tennisapp.client.TelegramClient;
+import org.school.app.skhoolchatbot.client.TelegramClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

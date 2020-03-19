@@ -190,6 +190,14 @@ public abstract class TelegramClient {
 		return keyBoardOrInline(complexButtons);
 	}
 
+	protected Button createKeyboardButton(String title) {
+		return new KeyboardButton(title);
+	}
+
+	protected Button createInlineButton(String title, String payload) {
+		return new InlineKeyboardButton(title, payload);
+	}
+
 
 	private static Markup keyBoardOrInline(List<List<Button>> complexButtons) {
 		return complexButtons.get(0).get(0) instanceof KeyboardButton ? new KeyboardMarkup(complexButtons) :

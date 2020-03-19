@@ -1,6 +1,7 @@
-package org.school.app.tennisapp.service;
+package org.school.app.skhoolchatbot.service;
 
-import org.school.app.tennisapp.model.User;
+import org.school.app.skhoolchatbot.exception.BotException;
+import org.school.app.skhoolchatbot.model.User;
 import org.springframework.stereotype.Service;
 import telegram.Message;
 
@@ -31,32 +32,17 @@ public class MessageService {
 	private void checkByStatus(Message message, User user) {
 
 		switch (user.getStatus()) {
-			case LOGIN:
-				loginFinalStep(message, user);
-				break;
-
-			case CHOOSE_TEXT_BOX:
-				chooseTestBox(message, user);
+			case TYPE_TEST_BOX_USTATUS:
+				typeTestBox(message, user);
 				break;
 
 			default:
-				throw new RuntimeException();
+				throw new BotException(message);
 		}
 
 	}
 
-	private void chooseTestBox(Message message, User user) {
+	private void typeTestBox(Message message, User user) {
 		testService.chooseTestBoxByStatus(message, user);
-	}
-
-	private void loginFinalStep(Message message, User user) {
-		String[] credentials = message.getText().split(" ");
-
-		user.setLogin(credentials[0].trim());
-		user.setPassword(credentials[1].trim());
-
-		commandService.login(message, user);
-
-		user.setStatus(null);
 	}
 }

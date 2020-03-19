@@ -1,6 +1,6 @@
 package org.school.app.controller;
 
-import org.school.app.tennisapp.service.DirectionService;
+import org.school.app.skhoolchatbot.service.DirectionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

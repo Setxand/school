@@ -1,10 +1,10 @@
-package org.school.app.tennisapp.exception;
+package org.school.app.skhoolchatbot.exception;
 
-import org.school.app.tennisapp.util.DictionaryUtil;
 import lombok.Getter;
+import org.school.app.skhoolchatbot.util.DictionaryUtil;
 import telegram.Message;
 
-import static org.school.app.tennisapp.config.DictionaryKeysConfig.SYSTEM_ERROR;
+import static org.school.app.skhoolchatbot.config.DictionaryKeysConfig.SYSTEM_ERROR;
 
 @Getter
 public class BotException extends RuntimeException {

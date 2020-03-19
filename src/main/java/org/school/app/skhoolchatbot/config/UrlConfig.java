@@ -1,4 +1,4 @@
-package org.school.app.tennisapp.config;
+package org.school.app.skhoolchatbot.config;
 
 
 import lombok.Getter;

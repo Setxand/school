@@ -1,4 +1,4 @@
-package org.school.app.tennisapp.dto;
+package org.school.app.skhoolchatbot.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

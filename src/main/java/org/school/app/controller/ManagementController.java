@@ -30,7 +30,7 @@ public class ManagementController {
 
 	@GetMapping("/v1/tests/{testId}")
 	public TestBoxDTO getTestBox(@PathVariable String testId) {
-		return DtoUtil.testBox(testBoxService.getTextBox(testId));
+		return DtoUtil.testBox(testBoxService.getTestBox(testId));
 	}
 
 	@ResponseStatus(HttpStatus.NO_CONTENT)

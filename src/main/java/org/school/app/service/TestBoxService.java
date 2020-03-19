@@ -6,6 +6,7 @@ import org.school.app.model.Question;
 import org.school.app.model.TestBox;
 import org.school.app.repository.TestBoxRepository;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,7 +38,7 @@ public class TestBoxService {
 		return boxRepo.findAll(pageable);
 	}
 
-	public TestBox getTextBox(String testId) {
+	public TestBox getTestBox(String testId) {
 		return boxRepo.findById(testId).orElseThrow(() -> new IllegalArgumentException("Invalid test box ID"));
 	}
 
@@ -46,7 +47,7 @@ public class TestBoxService {
 	}
 
 	public List<TestBox> getTestBoxesByName(String name) {
-		return boxRepo.findByName(name);
+		return boxRepo.findByName(name, new PageRequest(0, 5)).getContent();
 	}
 
 	private Question createQuestion(QuestionDTO q) {

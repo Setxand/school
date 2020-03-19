@@ -1,6 +1,6 @@
-package org.school.app.tennisapp.util;
+package org.school.app.skhoolchatbot.util;
 
-import org.school.app.tennisapp.config.DictionaryKeysConfig;
+import org.school.app.skhoolchatbot.config.DictionaryKeysConfig;
 
 import java.util.ResourceBundle;
 
