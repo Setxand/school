@@ -86,12 +86,16 @@ public class TestService {
 		Question question = testBox.getQuestions().get(testProcess.getCurrentTestStep());
 
 		if (user.getStatus() == User.UserStatus.NEXT_QUESTION &&
-				question.getCorrectAnswer().equals(message.getText().substring(0, 2))) {
+				getAnswerVariant(question.getCorrectAnswer()).equals(getAnswerVariant(message.getText()))) {
 			testProcess.setMark(testProcess.getMark() + 1);
 		}
 
 		testProcess.setCurrentTestStep(testProcess.getCurrentTestStep() + 1);
 		nextQuestion(message, user);
+	}
+
+	private String getAnswerVariant(String text) {
+		return text.substring(0, 2);
 	}
 
 	private void testEnded(Message message, User user, TestProcess testProcess) {
