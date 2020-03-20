@@ -27,7 +27,7 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler({Exception.class})
 	public void handleBotException(final Exception ex) {
-		logger.warn(ERROR_MESSAGE, ex);
+		logger.warn(ex.getMessage(), ex);
 	}
 
 }

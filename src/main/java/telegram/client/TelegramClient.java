@@ -115,6 +115,7 @@ public abstract class TelegramClient {
 		telegramRequest.setMarkup(new ReplyKeyboardRemove(true));
 		telegramRequest.setText("Done");
 		telegramRequest.setChatId(message.getChat().getId());
+		telegramRequest.setPlatform(message.getPlatform());
 		sendMessage(telegramRequest);
 	}
 

@@ -20,8 +20,8 @@ public class MessageService {
 
 	@Transactional
 	public void messageFromBot(Message message, User user) {
-
 		if (message.getText().contains("/")) {
+			user.setStatus(null);
 			commandService.commandToBot(message, user);
 
 		} else if (user.getStatus() != null) {
@@ -47,7 +47,7 @@ public class MessageService {
 	}
 
 	private void nextQuestion(Message message, User user) {
-		testService.nextQuestion(message, user);
+		testService.answer(message, user);
 	}
 
 	private void typeTestBox(Message message, User user) {
