@@ -22,7 +22,6 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler({BotException.class})
 	public void handleBotException(final BotException ex) {
 		telegramClient.simpleMessage(ex.getMessage(), ex.getTelegramSystemMessage());
-		logger.warn(ERROR_MESSAGE, ex);
 	}
 
 	@ExceptionHandler({Exception.class})

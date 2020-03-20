@@ -47,7 +47,7 @@ public class TestBoxService {
 	}
 
 	public List<TestBox> getTestBoxesByName(String name) {
-		return boxRepo.findByName(name, new PageRequest(0, 5)).getContent();
+		return boxRepo.findByName(name, new PageRequest(0, 4)).getContent();///todo fix
 	}
 
 	private Question createQuestion(QuestionDTO q) {

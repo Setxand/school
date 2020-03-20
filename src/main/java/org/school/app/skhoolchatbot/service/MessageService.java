@@ -12,10 +12,12 @@ public class MessageService {
 
 	private final CommandService commandService;
 	private final TestService testService;
+	private final UserGroupService userGroupService;
 
-	public MessageService(CommandService commandService, TestService testService) {
+	public MessageService(CommandService commandService, TestService testService, UserGroupService userGroupService) {
 		this.commandService = commandService;
 		this.testService = testService;
+		this.userGroupService = userGroupService;
 	}
 
 	@Transactional
@@ -33,11 +35,19 @@ public class MessageService {
 
 		switch (user.getStatus()) {
 			case TYPE_TEST_BOX_USTATUS:
-				typeTestBox(message, user);
+				testService.chooseTestBoxByStatus(message, user);
 				break;
 
 			case NEXT_QUESTION:
 				nextQuestion(message, user);
+				break;
+
+			case TYPE_NAME_USTATUS:
+				typeNameSendTest(message, user);
+				break;
+
+			case TYPE_TEST_BOX_FOR_USER_USTATUS:
+				testService.chooseTestBoxByStatus(message, user);
 				break;
 
 			default:
@@ -46,11 +56,12 @@ public class MessageService {
 
 	}
 
+	private void typeNameSendTest(Message message, User user) {
+		userGroupService.sendUserNamesByName(message, user);
+	}
+
 	private void nextQuestion(Message message, User user) {
 		testService.answer(message, user);
 	}
 
-	private void typeTestBox(Message message, User user) {
-		testService.chooseTestBoxByStatus(message, user);
-	}
 }

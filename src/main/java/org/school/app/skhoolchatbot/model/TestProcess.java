@@ -21,6 +21,7 @@ public class TestProcess {
 	private String currentTestId;
 	private int currentTestStep;
 	private int mark;
+	private Integer assignerChatId;
 
 	@ElementCollection
 	private Set<String> testHistory = new HashSet<>();

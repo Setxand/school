@@ -3,6 +3,7 @@ package org.school.app.skhoolchatbot.client;
 import org.school.app.model.Question;
 import org.school.app.model.TestBox;
 import org.school.app.skhoolchatbot.config.ChatbotConfig;
+import org.school.app.skhoolchatbot.model.User;
 import org.springframework.stereotype.Component;
 import telegram.Markup;
 import telegram.Message;
@@ -20,6 +21,12 @@ public class TelegramClient extends telegram.client.TelegramClient {
 	public void sendTextBoxesAsButtons(List<TestBox> testBoxNames, String text, Message message) {
 		Markup buttonListMarkup = createButtonListMarkup(false, testBoxNames.stream()
 				.map(tb -> createInlineButton(tb.getName(), tb.getId())).toArray(Button[]::new));
+		sendButtons(buttonListMarkup, text, message);
+	}
+
+	public void sendUsersAsButtons(List<User> users, String text, Message message) {
+		Markup buttonListMarkup = createButtonListMarkup(false, users.stream()
+				.map(u -> createInlineButton(u.getName(), u.getChatId().toString())).toArray(Button[]::new));
 		sendButtons(buttonListMarkup, text, message);
 	}
 

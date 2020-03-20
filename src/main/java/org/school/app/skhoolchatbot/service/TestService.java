@@ -13,13 +13,10 @@ import org.springframework.stereotype.Service;
 import telegram.CallBackQuery;
 import telegram.Message;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import static org.school.app.skhoolchatbot.config.DictionaryKeysConfig.TEST_ENDED;
-import static org.school.app.skhoolchatbot.config.DictionaryKeysConfig.TYPE_TEST_BOX_DICTIONARY;
-import static org.school.app.skhoolchatbot.model.User.UserStatus.CHOOSE_TEST_BOX_USTATUS;
-import static org.school.app.skhoolchatbot.model.User.UserStatus.TYPE_TEST_BOX_USTATUS;
+import static org.school.app.skhoolchatbot.config.DictionaryKeysConfig.*;
+import static org.school.app.skhoolchatbot.model.User.UserStatus.*;
 import static org.school.app.skhoolchatbot.util.DictionaryUtil.getDictionaryValue;
 
 @Service
@@ -27,19 +24,21 @@ public class TestService {
 
 	private final TelegramClient telegramClient;
 	private final TestBoxService testBoxService;
+	private final UserService userService;
 
-	public TestService(TelegramClient telegramClient, TestBoxService testBoxService) {
+	public TestService(TelegramClient telegramClient, TestBoxService testBoxService, UserService userService) {
 		this.telegramClient = telegramClient;
 		this.testBoxService = testBoxService;
+		this.userService = userService;
 	}
 
-	public void startTest(Message message, User user) {
+	public void startTest(Message message, User user, User.UserStatus userStatus) {
 		telegramClient.simpleMessage(getDictionaryValue(DictionaryKeysConfig.TYPE_TEST_BOX_DICTIONARY), message);
-		user.setStatus(TYPE_TEST_BOX_USTATUS);
+		user.setStatus(userStatus);
 	}
 
 	public void chooseTestBoxByStatus(Message message, User user) {
-		List<TestBox> testBoxes = new ArrayList<>(testBoxService.getTestBoxesByName(message.getText()));
+		List<TestBox> testBoxes = testBoxService.getTestBoxesByName(message.getText());
 
 		if (testBoxes.isEmpty()) {
 			throw new BotException("There is not such test boxes", message);
@@ -48,13 +47,14 @@ public class TestService {
 		telegramClient.sendTextBoxesAsButtons(testBoxes,
 				DictionaryUtil.getDictionaryValue(TYPE_TEST_BOX_DICTIONARY), message);
 
-		user.setStatus(CHOOSE_TEST_BOX_USTATUS);
+		user.setStatus(user.getStatus() == TYPE_TEST_BOX_FOR_USER_USTATUS ?
+				CHOOSE_TEST_BOX_FOR_USER_USTATUS : CHOOSE_TEST_BOX_USTATUS);
 	}
 
-	public void choosedTestBox(CallBackQuery callBackQuery, User user) {
-		telegramClient.editInlineButtons(null, callBackQuery.getMessage());
+	public void choosedTestBox(Message message, String testBoxId, User user) {
 
-		String testBoxId = callBackQuery.getData();
+		ediInlineButtons(message, user);
+
 		TestProcess testProcess = user.getTestProcess();
 
 		testProcess.setCurrentTestId(testBoxId);
@@ -63,21 +63,26 @@ public class TestService {
 //		testProcess.getTestHistory().add(testBoxId);
 
 		user.setStatus(User.UserStatus.NEXT_QUESTION);
-		nextQuestion(callBackQuery.getMessage(), user);
+		nextQuestion(message, user);
 	}
 
-	private void nextQuestion(Message message, User user) {
-		TestProcess testProcess = user.getTestProcess();///todo send to method "testproc" and testbox
-		TestBox testBox = testBoxService.getTestBox(testProcess.getCurrentTestId());
+	public void sendTest(Message message, User user) {
+		telegramClient.simpleMessage(DictionaryUtil.getDictionaryValue(TYPE_NAME), message);
+		user.setStatus(TYPE_NAME_USTATUS);
+	}
 
-		if (testProcess.getCurrentTestStep() == testBox.getQuestions().size()) {
-			testEnded(message, user, testProcess);
-			user.setStatus(null);
-			return;
-		}
+	public void startTestForUser(CallBackQuery callBackQuery, User user) {
+		Message message = callBackQuery.getMessage();
+		user.setAssigneeTestChatId(Integer.valueOf(callBackQuery.getData()));
 
-		Question question = testBox.getQuestions().get(testProcess.getCurrentTestStep());
-		telegramClient.sendQuestion(question, message);
+		startTest(message, user, TYPE_TEST_BOX_FOR_USER_USTATUS);
+	}
+
+	public void chooseTestBoxForUser(CallBackQuery callBackQuery, User user) {
+		User assigneeUser = userService.getUser(user.getAssigneeTestChatId());
+		Message message = callBackQuery.getMessage();
+
+		choosedTestBox(message, callBackQuery.getData(), assigneeUser);
 	}
 
 	public void answer(Message message, User user) {
@@ -92,6 +97,28 @@ public class TestService {
 
 		testProcess.setCurrentTestStep(testProcess.getCurrentTestStep() + 1);
 		nextQuestion(message, user);
+	}
+
+	private void ediInlineButtons(Message message, User user) {
+		telegramClient.editInlineButtons(null, message);
+
+		if (user.getStatus() == CHOOSE_TEST_BOX_FOR_USER_USTATUS) { //Redirect message to assignee user
+			message.getChat().setId(user.getChatId());
+		}
+	}
+
+	private void nextQuestion(Message message, User user) {
+		TestProcess testProcess = user.getTestProcess();///todo send to method "testproc" and testbox
+		TestBox testBox = testBoxService.getTestBox(testProcess.getCurrentTestId());
+
+		if (testProcess.getCurrentTestStep() == testBox.getQuestions().size()) {
+			testEnded(message, user, testProcess);
+			user.setStatus(null);
+			return;
+		}
+
+		Question question = testBox.getQuestions().get(testProcess.getCurrentTestStep());
+		telegramClient.sendQuestion(question, message);
 	}
 
 	private String getAnswerVariant(String text) {
