@@ -101,10 +101,7 @@ public class TestService {
 
 	private void ediInlineButtons(Message message, User user) {
 		telegramClient.editInlineButtons(null, message);
-
-		if (user.getStatus() == CHOOSE_TEST_BOX_FOR_USER_USTATUS) { //Redirect message to assignee user
-			message.getChat().setId(user.getChatId());
-		}
+		message.getChat().setId(user.getChatId()); // Destination to user, that is set to the method
 	}
 
 	private void nextQuestion(Message message, User user) {
