@@ -22,6 +22,11 @@ public class ManagementController {
 		testBoxService.createTestBox(dto);
 	}
 
+	@PostMapping("/v1/sync")
+	public void synchronize(@RequestParam String query) {
+		testBoxService.synchronize(query);
+	}
+
 	@GetMapping("/v1/tests")
 	public Page<TestBoxDTO> getTestBoxes(@SortDefault(sort = "createdAt", direction = Sort.Direction.DESC)
 													 												Pageable pageable) {

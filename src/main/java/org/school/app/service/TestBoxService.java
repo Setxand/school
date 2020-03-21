@@ -5,11 +5,13 @@ import org.school.app.dto.TestBoxDTO;
 import org.school.app.model.Question;
 import org.school.app.model.TestBox;
 import org.school.app.repository.TestBoxRepository;
+import org.school.app.utils.DtoUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
@@ -19,9 +21,11 @@ import static java.util.stream.Collectors.toList;
 public class TestBoxService {
 
 	private final TestBoxRepository boxRepo;
+	private final RestTemplate restTemplate;
 
 	public TestBoxService(TestBoxRepository boxRepo) {
 		this.boxRepo = boxRepo;
+		this.restTemplate = new RestTemplate();
 	}
 
 	@Transactional
@@ -48,6 +52,20 @@ public class TestBoxService {
 
 	public List<TestBox> getTestBoxesByName(String name) {
 		return boxRepo.findByName(name, new PageRequest(0, 4)).getContent();///todo fix
+	}
+
+	public void synchronize(String query) {
+		PageRequest pageRequest = new PageRequest(0, 100);
+		Page<TestBox> testBoxes = getTestBoxes(pageRequest);
+
+		while (testBoxes.isEmpty()) {
+
+			testBoxes.forEach(t -> {
+				restTemplate.postForEntity(query + "/v1/tests", DtoUtil.testBox(t), Void.class);
+			});
+
+			testBoxes = getTestBoxes(pageRequest);
+		}
 	}
 
 	private Question createQuestion(QuestionDTO q) {
