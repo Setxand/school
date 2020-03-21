@@ -17,12 +17,12 @@ public class ManagementController {
 	@Autowired TestBoxService testBoxService;
 
 	@ResponseStatus(HttpStatus.CREATED)
-	@GetMapping("/v1/tests")
+	@PostMapping("/v1/tests")
 	public void createTestBox(@RequestBody TestBoxDTO dto){
 		testBoxService.createTestBox(dto);
 	}
 
-	@PostMapping("/v1/sync")
+	@GetMapping("/v1/sync")
 	public void synchronize(@RequestParam String query) {
 		testBoxService.synchronize(query);
 	}
