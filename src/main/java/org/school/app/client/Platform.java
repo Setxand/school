@@ -1,4 +1,4 @@
-package org.school.app.skhoolchatbot.client;
+package org.school.app.client;
 
 public enum Platform implements telegram.Platform {
 

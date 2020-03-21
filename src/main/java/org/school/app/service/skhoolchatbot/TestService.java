@@ -1,23 +1,25 @@
-package org.school.app.skhoolchatbot.service;
+package org.school.app.service.skhoolchatbot;
 
+import org.school.app.client.TelegramClient;
+import org.school.app.config.DictionaryKeysConfig;
+import org.school.app.exception.BotException;
 import org.school.app.model.Question;
 import org.school.app.model.TestBox;
+import org.school.app.model.TestProcess;
+import org.school.app.model.User;
 import org.school.app.service.TestBoxService;
-import org.school.app.skhoolchatbot.client.TelegramClient;
-import org.school.app.skhoolchatbot.config.DictionaryKeysConfig;
-import org.school.app.skhoolchatbot.exception.BotException;
-import org.school.app.skhoolchatbot.model.TestProcess;
-import org.school.app.skhoolchatbot.model.User;
-import org.school.app.skhoolchatbot.util.DictionaryUtil;
+import org.school.app.service.TestProcessService;
+import org.school.app.utils.DictionaryUtil;
 import org.springframework.stereotype.Service;
 import telegram.CallBackQuery;
 import telegram.Message;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.school.app.skhoolchatbot.config.DictionaryKeysConfig.*;
-import static org.school.app.skhoolchatbot.model.User.UserStatus.*;
-import static org.school.app.skhoolchatbot.util.DictionaryUtil.getDictionaryValue;
+import static org.school.app.config.DictionaryKeysConfig.*;
+import static org.school.app.model.User.UserStatus.*;
+import static org.school.app.utils.DictionaryUtil.getDictionaryValue;
 
 @Service
 public class TestService {
@@ -25,11 +27,14 @@ public class TestService {
 	private final TelegramClient telegramClient;
 	private final TestBoxService testBoxService;
 	private final UserService userService;
+	private final TestProcessService testProcessService;
 
-	public TestService(TelegramClient telegramClient, TestBoxService testBoxService, UserService userService) {
+	public TestService(TelegramClient telegramClient, TestBoxService testBoxService, UserService userService,
+					   TestProcessService testProcessService) {
 		this.telegramClient = telegramClient;
 		this.testBoxService = testBoxService;
 		this.userService = userService;
+		this.testProcessService = testProcessService;
 	}
 
 	public void startTest(Message message, User user, User.UserStatus userStatus) {
@@ -51,18 +56,19 @@ public class TestService {
 				CHOOSE_TEST_BOX_FOR_USER_USTATUS : CHOOSE_TEST_BOX_USTATUS);
 	}
 
+	/**
+	 *
+	 * @param user - user, which is a receiver of the message (can be used for '/starttest' and '/sendtest')
+	 *             in case of '/sendtest' user - receiver of thmessage, and it's redirected in previous method
+	 *             'public void chooseTestBoxForUser(CallBackQuery callBackQuery, User user)' in the @param message.
+	 *             in this case chatId of sender is held till method 'ediInlineButtons(message, user)'
+	 */
 	public void choosedTestBox(Message message, String testBoxId, User user) {
+		testProcessService.createTestProcess(testBoxId, user.getChatId(), message.getChat().getId());
 
 		ediInlineButtons(message, user);
-
-		TestProcess testProcess = user.getTestProcess();
-
-		testProcess.setCurrentTestId(testBoxId);
-		testProcess.setCurrentTestStep(0);
-		testProcess.setMark(0);
-//		testProcess.getTestHistory().add(testBoxId);
-
 		user.setStatus(User.UserStatus.NEXT_QUESTION);
+
 		nextQuestion(message, user);
 	}
 
@@ -86,7 +92,8 @@ public class TestService {
 	}
 
 	public void answer(Message message, User user) {
-		TestProcess testProcess = user.getTestProcess();
+		TestProcess testProcess = testProcessService.getActiveTestProcess(user.getChatId());
+
 		TestBox testBox = testBoxService.getTestBox(testProcess.getCurrentTestId());
 		Question question = testBox.getQuestions().get(testProcess.getCurrentTestStep());
 
@@ -105,11 +112,11 @@ public class TestService {
 	}
 
 	private void nextQuestion(Message message, User user) {
-		TestProcess testProcess = user.getTestProcess();///todo send to method "testproc" and testbox
+		TestProcess testProcess = testProcessService.getActiveTestProcess(user.getChatId());///todo send to method "testproc" and testbox
 		TestBox testBox = testBoxService.getTestBox(testProcess.getCurrentTestId());
 
 		if (testProcess.getCurrentTestStep() == testBox.getQuestions().size()) {
-			testEnded(message, user, testProcess);
+			testEnded(message, testProcess, user.getName());
 			user.setStatus(null);
 			return;
 		}
@@ -122,9 +129,14 @@ public class TestService {
 		return text.substring(0, 2);
 	}
 
-	private void testEnded(Message message, User user, TestProcess testProcess) {
-		String text = String.format(DictionaryUtil.getDictionaryValue(TEST_ENDED), testProcess.getMark());
-		telegramClient.simpleMessage(text, message);
+	private void testEnded(Message message, TestProcess testProcess, String userName) {
+		String testEndedMessage = String.format(DictionaryUtil.getDictionaryValue(TEST_ENDED), testProcess.getMark());
+		telegramClient.simpleMessage(testEndedMessage, message);
 		telegramClient.removeKeyboardButtons(message);
+		testProcess.setActive(false);
+		testProcess.setEndTime(LocalDateTime.now());
+
+		message.getChat().setId(testProcess.getSenderChatId());
+		telegramClient.simpleMessage(DictionaryUtil.createTestConclusion(testProcess, userName), message);
 	}
 }

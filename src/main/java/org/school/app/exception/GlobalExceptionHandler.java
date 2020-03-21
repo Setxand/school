@@ -1,14 +1,14 @@
-package org.school.app.skhoolchatbot.exception;
+package org.school.app.exception;
 
 import org.apache.log4j.Logger;
-import org.school.app.skhoolchatbot.client.TelegramClient;
+import org.school.app.client.TelegramClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-import static org.school.app.skhoolchatbot.config.DictionaryKeysConfig.SYSTEM_ERROR;
-import static org.school.app.skhoolchatbot.util.DictionaryUtil.getDictionaryValue;
+import static org.school.app.config.DictionaryKeysConfig.SYSTEM_ERROR;
+import static org.school.app.utils.DictionaryUtil.getDictionaryValue;
 
 @EnableWebMvc
 @ControllerAdvice

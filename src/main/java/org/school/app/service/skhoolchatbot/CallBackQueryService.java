@@ -1,9 +1,9 @@
-package org.school.app.skhoolchatbot.service;
+package org.school.app.service.skhoolchatbot;
 
-import org.school.app.skhoolchatbot.config.DictionaryKeysConfig;
-import org.school.app.skhoolchatbot.exception.BotException;
-import org.school.app.skhoolchatbot.model.User;
-import org.school.app.skhoolchatbot.util.DictionaryUtil;
+import org.school.app.config.DictionaryKeysConfig;
+import org.school.app.exception.BotException;
+import org.school.app.model.User;
+import org.school.app.utils.DictionaryUtil;
 import org.springframework.stereotype.Service;
 import telegram.CallBackQuery;
 

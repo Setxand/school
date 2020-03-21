@@ -1,7 +1,7 @@
-package org.school.app.skhoolchatbot.repository;
+package org.school.app.repository;
 
 
-import org.school.app.skhoolchatbot.model.User;
+import org.school.app.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

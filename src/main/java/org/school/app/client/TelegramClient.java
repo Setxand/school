@@ -1,9 +1,9 @@
-package org.school.app.skhoolchatbot.client;
+package org.school.app.client;
 
+import org.school.app.config.ChatbotConfig;
 import org.school.app.model.Question;
 import org.school.app.model.TestBox;
-import org.school.app.skhoolchatbot.config.ChatbotConfig;
-import org.school.app.skhoolchatbot.model.User;
+import org.school.app.model.User;
 import org.springframework.stereotype.Component;
 import telegram.Markup;
 import telegram.Message;

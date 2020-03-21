@@ -1,4 +1,4 @@
-package org.school.app.skhoolchatbot.config;
+package org.school.app.config;
 
 public enum DictionaryKeysConfig {
 
@@ -10,6 +10,8 @@ public enum DictionaryKeysConfig {
 	TEST_ENDED,
 	TYPE_NAME,
 	CHOOSE_USER_DICTIONARY,
-	CANT_NOW
+	CANT_NOW,
+	USER_HAS_TEST_NOW,
+	TEST_CONCLUSION
 
 }

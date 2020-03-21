@@ -1,7 +1,7 @@
-package org.school.app.skhoolchatbot.service;
+package org.school.app.service.skhoolchatbot;
 
-import org.school.app.skhoolchatbot.exception.BotException;
-import org.school.app.skhoolchatbot.model.User;
+import org.school.app.exception.BotException;
+import org.school.app.model.User;
 import org.springframework.stereotype.Service;
 import telegram.Message;
 

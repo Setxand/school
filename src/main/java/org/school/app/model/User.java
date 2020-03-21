@@ -1,10 +1,12 @@
-package org.school.app.skhoolchatbot.model;
+package org.school.app.model;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -24,8 +26,8 @@ public class User {
 
 	}
 
-	@OneToOne(cascade = CascadeType.ALL)
-	private TestProcess testProcess = new TestProcess();
+	@OneToMany(cascade = CascadeType.ALL)
+	private List<TestProcess> testProcesses = new ArrayList<>();
 
 	@Id
 	private Integer chatId;

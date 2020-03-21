@@ -1,16 +1,16 @@
-package org.school.app.skhoolchatbot.service;
+package org.school.app.service.skhoolchatbot;
 
 
-import org.school.app.skhoolchatbot.model.User;
-import org.school.app.skhoolchatbot.repository.UserRepository;
-import org.school.app.skhoolchatbot.util.DictionaryUtil;
+import org.school.app.model.User;
+import org.school.app.repository.UserRepository;
+import org.school.app.utils.DictionaryUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import telegram.Message;
 
-import static org.school.app.skhoolchatbot.config.DictionaryKeysConfig.USER_ID_INVALID;
+import static org.school.app.config.DictionaryKeysConfig.USER_ID_INVALID;
 
 @Service
 public class UserService {
@@ -30,7 +30,6 @@ public class UserService {
 			User user = new User();
 			user.setChatId(message.getChat().getId());
 			user.setName(message.getFrom().getFirstName() + " " + message.getFrom().getLastName());
-			user.getTestProcess().setChatId(user.getChatId());
 			return userRepository.saveAndFlush(user);
 		});
 	}

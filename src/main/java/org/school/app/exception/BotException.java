@@ -1,10 +1,12 @@
-package org.school.app.skhoolchatbot.exception;
+package org.school.app.exception;
 
 import lombok.Getter;
-import org.school.app.skhoolchatbot.util.DictionaryUtil;
+import org.school.app.client.Platform;
+import org.school.app.utils.DictionaryUtil;
+import telegram.Chat;
 import telegram.Message;
 
-import static org.school.app.skhoolchatbot.config.DictionaryKeysConfig.SYSTEM_ERROR;
+import static org.school.app.config.DictionaryKeysConfig.SYSTEM_ERROR;
 
 @Getter
 public class BotException extends RuntimeException {
@@ -13,6 +15,13 @@ public class BotException extends RuntimeException {
 
 	public BotException(String message, Message telegramSystemMessage) {
 		super(message);
+		this.telegramSystemMessage = telegramSystemMessage;
+	}
+
+	public BotException(String message, Integer chatId) {
+		super(message);
+		Message telegramSystemMessage = new Message(new Chat(chatId));
+		telegramSystemMessage.setPlatform(Platform.COMMON);
 		this.telegramSystemMessage = telegramSystemMessage;
 	}
 

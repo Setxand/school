@@ -1,17 +1,17 @@
-package org.school.app.skhoolchatbot.service;
+package org.school.app.service.skhoolchatbot;
 
-import org.school.app.skhoolchatbot.client.TelegramClient;
-import org.school.app.skhoolchatbot.exception.BotException;
-import org.school.app.skhoolchatbot.model.User;
-import org.school.app.skhoolchatbot.util.DictionaryUtil;
+import org.school.app.client.TelegramClient;
+import org.school.app.exception.BotException;
+import org.school.app.model.User;
+import org.school.app.utils.DictionaryUtil;
 import org.springframework.stereotype.Service;
 import telegram.Message;
 
 import java.util.List;
 
-import static org.school.app.skhoolchatbot.config.DictionaryKeysConfig.CHOOSE_USER_DICTIONARY;
-import static org.school.app.skhoolchatbot.config.DictionaryKeysConfig.USER_ID_INVALID;
-import static org.school.app.skhoolchatbot.util.DictionaryUtil.getDictionaryValue;
+import static org.school.app.config.DictionaryKeysConfig.CHOOSE_USER_DICTIONARY;
+import static org.school.app.config.DictionaryKeysConfig.USER_ID_INVALID;
+import static org.school.app.utils.DictionaryUtil.getDictionaryValue;
 
 @Service
 public class UserGroupService {
