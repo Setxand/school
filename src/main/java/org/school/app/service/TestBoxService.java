@@ -1,5 +1,6 @@
 package org.school.app.service;
 
+import org.apache.log4j.Logger;
 import org.school.app.dto.QuestionDTO;
 import org.school.app.dto.TestBoxDTO;
 import org.school.app.model.Question;
@@ -19,6 +20,8 @@ import static java.util.stream.Collectors.toList;
 
 @Service
 public class TestBoxService {
+
+	private static final Logger logger = Logger.getLogger(TestBoxService.class);
 
 	private final TestBoxRepository boxRepo;
 	private final RestTemplate restTemplate;
@@ -61,6 +64,7 @@ public class TestBoxService {
 		while (!testBoxes.isEmpty()) {
 
 			testBoxes.forEach(t -> {
+				logger.info("restTemplate.postForEntity(" + query + " + \"/v1/tests\", DtoUtil.testBox(t), Void.class);");
 				restTemplate.postForEntity(query + "/v1/tests", DtoUtil.testBox(t), Void.class);
 			});
 
