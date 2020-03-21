@@ -17,7 +17,7 @@ import java.time.format.DateTimeFormatter;
 @NoArgsConstructor
 public class TestProcess {
 
-	private static final String DATE_FORMATTER = "dd -MM-yyyy HH:mm:ss";
+	private static final String DATE_FORMATTER = "dd-MM-yyyy HH:mm:ss";
 
 	@Id
 	@GeneratedValue(generator = "uuid")

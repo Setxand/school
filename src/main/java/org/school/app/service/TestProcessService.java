@@ -4,6 +4,7 @@ import org.school.app.exception.BotException;
 import org.school.app.model.TestProcess;
 import org.school.app.repository.TestProcessRepository;
 import org.springframework.stereotype.Service;
+import telegram.Message;
 
 import javax.transaction.Transactional;
 import java.util.Optional;
@@ -23,12 +24,12 @@ public class TestProcessService {
 	}
 
 	@Transactional
-	public void createTestProcess(String testBoxId, Integer chatId, Integer senderChatId) {
+	public void createTestProcess(String testBoxId, Integer chatId, Message message) {
 		TestProcess testProcess = new TestProcess();
 		testProcess.setCurrentTestId(testBoxId);
 		testProcess.setUserChatId(chatId);
-		testProcess.setSenderChatId(senderChatId);
-		setActive(testProcess, chatId);
+		testProcess.setSenderChatId(message.getChat().getId());
+		setActive(testProcess, chatId, message.getFrom().getLanguageCode());
 		testProcessRepo.save(testProcess);
 	}
 
@@ -37,12 +38,12 @@ public class TestProcessService {
 				.orElseThrow(() -> new IllegalArgumentException(INVALID_TEST_PROCESS));
 	}
 
-	private void setActive(TestProcess testProcess, Integer chatId) {
+	private void setActive(TestProcess testProcess, Integer chatId, String languageCode) {
 		Optional<TestProcess> byChatIdAndActiveIsTrue = testProcessRepo.findByUserChatIdAndActiveIsTrue(chatId);
 
 		if (!byChatIdAndActiveIsTrue.isPresent()) {
 			testProcess.setActive(true);
 		}
-		else throw new BotException(getDictionaryValue(USER_HAS_TEST_NOW), testProcess.getSenderChatId());
+		else throw new BotException(getDictionaryValue(USER_HAS_TEST_NOW, languageCode), testProcess.getSenderChatId());
 	}
 }

@@ -47,7 +47,8 @@ public class CommandService {
 				break;
 
 			default:
-				throw new BotException(getDictionaryValue(UNKNOWN_COMMAND), message);
+				throw new BotException(getDictionaryValue(UNKNOWN_COMMAND,
+						message.getFrom().getLanguageCode()), message);
 		}
 	}
 

@@ -30,10 +30,12 @@ public class UserGroupService {
 		List<User> users = userService.searchUsersByName(message.getText()).getContent();
 
 		if (users.isEmpty()) {
-			throw new BotException(DictionaryUtil.getDictionaryValue(USER_ID_INVALID), message);
+			throw new BotException(DictionaryUtil.getDictionaryValue(USER_ID_INVALID,
+					message.getFrom().getLanguageCode()), message);
 		}
 
-		telegramClient.sendUsersAsButtons(users, getDictionaryValue(CHOOSE_USER_DICTIONARY), message);
+		telegramClient.sendUsersAsButtons(users,
+				getDictionaryValue(CHOOSE_USER_DICTIONARY, message.getFrom().getLanguageCode()), message);
 		user.setStatus(User.UserStatus.CHOOSE_USER_USTATUS);
 	}
 }

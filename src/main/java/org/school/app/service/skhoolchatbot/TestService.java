@@ -38,7 +38,8 @@ public class TestService {
 	}
 
 	public void startTest(Message message, User user, User.UserStatus userStatus) {
-		telegramClient.simpleMessage(getDictionaryValue(DictionaryKeysConfig.TYPE_TEST_BOX_DICTIONARY), message);
+		telegramClient.simpleMessage(getDictionaryValue(DictionaryKeysConfig.TYPE_TEST_BOX_DICTIONARY,
+				message.getFrom().getLanguageCode()), message);
 		user.setStatus(userStatus);
 	}
 
@@ -50,7 +51,8 @@ public class TestService {
 		}
 
 		telegramClient.sendTextBoxesAsButtons(testBoxes,
-				DictionaryUtil.getDictionaryValue(TYPE_TEST_BOX_DICTIONARY), message);
+				DictionaryUtil.getDictionaryValue(TYPE_TEST_BOX_DICTIONARY,
+						message.getFrom().getLanguageCode()), message);
 
 		user.setStatus(user.getStatus() == TYPE_TEST_BOX_FOR_USER_USTATUS ?
 				CHOOSE_TEST_BOX_FOR_USER_USTATUS : CHOOSE_TEST_BOX_USTATUS);
@@ -64,7 +66,7 @@ public class TestService {
 	 *             in this case chatId of sender is held till method 'ediInlineButtons(message, user)'
 	 */
 	public void choosedTestBox(Message message, String testBoxId, User user) {
-		testProcessService.createTestProcess(testBoxId, user.getChatId(), message.getChat().getId());
+		testProcessService.createTestProcess(testBoxId, user.getChatId(), message);
 
 		ediInlineButtons(message, user);
 		user.setStatus(User.UserStatus.NEXT_QUESTION);
@@ -73,7 +75,8 @@ public class TestService {
 	}
 
 	public void sendTest(Message message, User user) {
-		telegramClient.simpleMessage(DictionaryUtil.getDictionaryValue(TYPE_NAME), message);
+		telegramClient.simpleMessage(DictionaryUtil
+				.getDictionaryValue(TYPE_NAME, message.getFrom().getLanguageCode()), message);
 		user.setStatus(TYPE_NAME_USTATUS);
 	}
 
@@ -130,13 +133,16 @@ public class TestService {
 	}
 
 	private void testEnded(Message message, TestProcess testProcess, String userName) {
-		String testEndedMessage = String.format(DictionaryUtil.getDictionaryValue(TEST_ENDED), testProcess.getMark());
+		String testEndedMessage = String.format(DictionaryUtil
+				.getDictionaryValue(TEST_ENDED, message.getFrom().getLanguageCode()), testProcess.getMark());
+
 		telegramClient.simpleMessage(testEndedMessage, message);
 		telegramClient.removeKeyboardButtons(message);
 		testProcess.setActive(false);
 		testProcess.setEndTime(LocalDateTime.now());
 
 		message.getChat().setId(testProcess.getSenderChatId());
-		telegramClient.simpleMessage(DictionaryUtil.createTestConclusion(testProcess, userName), message);
+		telegramClient.simpleMessage(DictionaryUtil
+				.createTestConclusion(testProcess, userName, message.getFrom().getLanguageCode()), message);
 	}
 }

@@ -3,18 +3,17 @@ package org.school.app.service.skhoolchatbot;
 
 import org.school.app.model.User;
 import org.school.app.repository.UserRepository;
-import org.school.app.utils.DictionaryUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import telegram.Message;
 
-import static org.school.app.config.DictionaryKeysConfig.USER_ID_INVALID;
-
 @Service
 public class UserService {
 
+
+	private static final String INVALID_USER_ID = "Invalid user ID";
 
 	private final Integer ADMIN_ID;
 	private final UserRepository userRepository;
@@ -40,6 +39,6 @@ public class UserService {
 
 	public User getUser(Integer userId) {
 		return userRepository.findById(userId).orElseThrow(
-				() -> new IllegalArgumentException(DictionaryUtil.getDictionaryValue(USER_ID_INVALID)));
+				() -> new IllegalArgumentException(INVALID_USER_ID));
 	}
 }

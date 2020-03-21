@@ -26,7 +26,7 @@ public class BotException extends RuntimeException {
 	}
 
 	public BotException(Message telegramSystemMessage) {
-		super(DictionaryUtil.getDictionaryValue(SYSTEM_ERROR));
+		super(DictionaryUtil.getDictionaryValue(SYSTEM_ERROR, telegramSystemMessage.getFrom().getLanguageCode()));
 		this.telegramSystemMessage = telegramSystemMessage;
 	}
 }

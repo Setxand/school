@@ -48,7 +48,8 @@ public class CallBackQueryService {
 
 			default:
 				throw new BotException(DictionaryUtil
-						.getDictionaryValue(DictionaryKeysConfig.CANT_NOW), callBackQuery.getMessage());
+						.getDictionaryValue(DictionaryKeysConfig.CANT_NOW,
+								callBackQuery.getMessage().getFrom().getLanguageCode()), callBackQuery.getMessage());
 		}
 
 	}
