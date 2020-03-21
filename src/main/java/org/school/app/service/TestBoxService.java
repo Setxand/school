@@ -68,7 +68,7 @@ public class TestBoxService {
 				restTemplate.postForEntity(query + "/v1/tests", DtoUtil.testBox(t), Void.class);
 			});
 
-			testBoxes = getTestBoxes(pageRequest);
+			testBoxes = getTestBoxes(pageRequest.next());
 		}
 	}
 
