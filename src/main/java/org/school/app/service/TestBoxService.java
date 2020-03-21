@@ -58,7 +58,7 @@ public class TestBoxService {
 		PageRequest pageRequest = new PageRequest(0, 100);
 		Page<TestBox> testBoxes = getTestBoxes(pageRequest);
 
-		while (testBoxes.isEmpty()) {
+		while (!testBoxes.isEmpty()) {
 
 			testBoxes.forEach(t -> {
 				restTemplate.postForEntity(query + "/v1/tests", DtoUtil.testBox(t), Void.class);
