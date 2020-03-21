@@ -17,7 +17,7 @@ public class ManagementController {
 	@Autowired TestBoxService testBoxService;
 
 	@ResponseStatus(HttpStatus.CREATED)
-	@PostMapping("/v1/tests")
+	@GetMapping("/v1/tests")
 	public void createTestBox(@RequestBody TestBoxDTO dto){
 		testBoxService.createTestBox(dto);
 	}
