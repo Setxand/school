@@ -52,6 +52,7 @@ public class MessageService {
 
 			case TYPE_GROUP_NAME:
 				userGroupService.typeGroupName(message, user);
+				break;
 
 			default:
 				throw new BotException(message);
