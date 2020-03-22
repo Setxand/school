@@ -54,7 +54,8 @@ public class UserGroupService {
 		userGroupRepo.save(userGroup);
 
 		telegramClient.simpleMessage(DictionaryUtil
-				.getDictionaryValue(UGROUP_CREATED, message.getFrom().getLanguageCode()), message);
+				.getDictionaryValueWithParams(UGROUP_CREATED,
+						message.getFrom().getLanguageCode(), userGroup.getName()), message);
 
 		user.setStatus(null);
 	}

@@ -19,8 +19,9 @@ public class DictionaryUtil {
 		return ResourceBundle.getBundle("dictionary1", localeToGetMessage).getString(key.name());
 	}
 
-	public static String getDictionaryValueWithParams(DictionaryKeysConfig key, String... strings) {
-		return String.format(ResourceBundle.getBundle("dictionary1").getString(key.name()), strings);
+	public static String getDictionaryValueWithParams(
+			DictionaryKeysConfig key, String languageCode, String... strings) {
+		return String.format(getDictionaryValue(key, languageCode), strings);
 	}
 
 	public static String createTestConclusion(TestProcess testProcess, String userName, String languageCode) {

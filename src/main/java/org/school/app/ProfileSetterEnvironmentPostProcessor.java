@@ -9,7 +9,7 @@ public class ProfileSetterEnvironmentPostProcessor implements EnvironmentPostPro
 
 	@Override
 	public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
-		if (System.getenv().get("OS") != null && !System.getenv().get("OS").contains("Windows")) {
+		if (System.getenv().get("OS") == null || !System.getenv().get("OS").contains("Windows")) {
 			environment.setActiveProfiles("heroku");
 		}
 	}
