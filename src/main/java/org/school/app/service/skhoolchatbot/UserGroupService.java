@@ -13,6 +13,7 @@ import telegram.Message;
 import java.util.List;
 
 import static org.school.app.config.DictionaryKeysConfig.*;
+import static org.school.app.model.User.UserStatus.*;
 import static org.school.app.utils.DictionaryUtil.getDictionaryValue;
 
 @Service
@@ -61,6 +62,10 @@ public class UserGroupService implements GroupServiceConstants {
 		user.setStatus(null);
 	}
 
+	public void removeUserFromGroup(Message message, User user) {
+		userGroupHelper.sendTypeName(message, user, REMOVE_FROM_CLASS_STATUS1);
+	}
+
 	public void removeUserGroup(Message message, User user) {
 		userGroupHelper.removeUserGroup(message, user);
 	}
@@ -74,22 +79,38 @@ public class UserGroupService implements GroupServiceConstants {
 	}
 
 	public void addToUserGroup(Message message, User user) {
-		userGroupHelper.addToUserGroup(message, user);
+		userGroupHelper.sendTypeName(message, user, ADD_TO_CLASS_STATUS);
 	}
 
 	public void addToUserGroupStep1(CallBackQuery callBackQuery, User user) {
-		userGroupHelper.addToUserGroupStep1(callBackQuery, user);
+		userGroupHelper.saveUserGroupInfoAndSendTypeNameMessage(callBackQuery, user, ADD_TO_CLASS_STATUS2);
 	}
 
 	public void addUserGroupStep2(Message message, User user) {
-		userGroupHelper.addToUserGroupStep2(message, user);
+		userGroupHelper.userGroupActionsSendUsersAsButtons(message, user, ADD_TO_CLASS_STATUS3);
 	}
 
 	public void addToUserGroupStep3(CallBackQuery callBackQuery, User user) {
-		userGroupHelper.addToUserGroupStep3(callBackQuery, user);
+		userGroupHelper.addToUserGroupFinalStep(callBackQuery, user);
 	}
 
 	public void addToUserGroupStep0(Message message, User user) {
-		userGroupHelper.addToUserGroupStep0(message, user);
+		userGroupHelper.sendGroupNamesForUsers(message, user, ADD_TO_CLASS_STATUS1);
+	}
+
+	public void removeUserFromGroupStep1(Message message, User user) {
+		userGroupHelper.sendGroupNamesForUsers(message, user, REMOVE_FROM_CLASS_STATUS2);
+	}
+
+	public void removeUserFromGroupStep2(CallBackQuery callBackQuery, User user) {
+		userGroupHelper.saveUserGroupInfoAndSendTypeNameMessage(callBackQuery, user, REMOVE_FROM_CLASS_STATUS3);
+	}
+
+	public void removeUserFromGroupStep3(Message message, User user) {
+		userGroupHelper.userGroupActionsSendUsersAsButtons(message, user, REMOVE_FROM_CLASS_STATUS4);
+	}
+
+	public void removeUserFromGroupStep4(CallBackQuery callBackQuery, User user) {
+		userGroupHelper.removeUserGroupFinalStep(callBackQuery, user);
 	}
 }

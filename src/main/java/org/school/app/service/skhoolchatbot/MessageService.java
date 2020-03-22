@@ -66,6 +66,13 @@ public class MessageService {
 				userGroupService.addToUserGroupStep0(message, user);
 				break;
 
+			case REMOVE_FROM_CLASS_STATUS1:
+				userGroupService.removeUserFromGroupStep1(message, user);
+				break;
+
+			case REMOVE_FROM_CLASS_STATUS3:
+				userGroupService.removeUserFromGroupStep3(message, user);
+				break;
 
 			default:
 				throw new BotException(message);

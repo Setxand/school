@@ -60,6 +60,14 @@ public class CallBackQueryService {
 				userGroupService.addToUserGroupStep3(callBackQuery, user);
 				break;
 
+			case REMOVE_FROM_CLASS_STATUS2:
+				userGroupService.removeUserFromGroupStep2(callBackQuery, user);
+				break;
+
+			case REMOVE_FROM_CLASS_STATUS4:
+				userGroupService.removeUserFromGroupStep4(callBackQuery, user);
+				break;
+
 			default:
 				throw new BotException(DictionaryUtil
 						.getDictionaryValue(DictionaryKeysConfig.CANT_NOW,
