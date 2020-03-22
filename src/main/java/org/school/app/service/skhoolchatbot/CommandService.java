@@ -2,6 +2,7 @@ package org.school.app.service.skhoolchatbot;
 
 import org.school.app.exception.BotException;
 import org.school.app.model.User;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import telegram.Message;
 import telegram.client.TelegramClient;
@@ -30,6 +31,7 @@ public class CommandService {
 	private final TelegramClient telegramClient;
 	private final TestService testService;
 	private final UserGroupService userGroupService;
+	@Value("${id.admin}") private String adminId;
 
 	public CommandService(TelegramClient telegramClient, TestService testService, UserGroupService userGroupService) {
 		this.telegramClient = telegramClient;
@@ -48,11 +50,16 @@ public class CommandService {
 				break;
 
 			case TelegramCommands.START_TEST:
-				startTest(message, user);
+				if (message.getChat().getId().equals(Integer.valueOf(adminId))) {
+					startTest(message, user);
+				}
+
 				break;
 
 			case TelegramCommands.SEND_TEST:
-				testService.sendTest(message, user);
+				if (message.getChat().getId().equals(Integer.valueOf(adminId))) {
+					testService.sendTest(message, user);
+				}
 				break;
 
 			case TelegramCommands.CREATE_CLASS:
