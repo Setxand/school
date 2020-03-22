@@ -54,6 +54,10 @@ public class MessageService {
 				userGroupService.typeGroupName(message, user);
 				break;
 
+			case REMOVE_CLASS_STATUS:
+				userGroupService.removeClassEnterName(message, user);
+				break;
+
 			default:
 				throw new BotException(message);
 		}

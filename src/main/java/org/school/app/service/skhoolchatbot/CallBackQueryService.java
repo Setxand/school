@@ -17,9 +17,11 @@ public class CallBackQueryService {
 	}
 
 	private final TestService testService;
+	private final UserGroupService userGroupService;
 
-	public CallBackQueryService(TestService testService) {
+	public CallBackQueryService(TestService testService, UserGroupService userGroupService) {
 		this.testService = testService;
+		this.userGroupService = userGroupService;
 	}
 
 	@Transactional
@@ -44,6 +46,10 @@ public class CallBackQueryService {
 
 			case CHOOSE_TEST_BOX_FOR_USER_USTATUS:
 				testService.chooseTestBoxForUser(callBackQuery, user);
+				break;
+
+			case REMOVE_CLASS_STATUS1:
+				userGroupService.removeUserGroupStep1(callBackQuery, user);
 				break;
 
 			default:
