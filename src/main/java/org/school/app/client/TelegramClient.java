@@ -47,7 +47,7 @@ public class TelegramClient extends telegram.client.TelegramClient {
 		sendButtons(buttonListMarkup, text, message);
 	}
 
-	public void simpleMessage(DictionaryKeysConfig key, String languageCode, Message message) {
-		simpleMessage(DictionaryUtil.getDictionaryValue(key, languageCode), message);
+	public void simpleMessage(DictionaryKeysConfig key, Message message) {
+		simpleMessage(DictionaryUtil.getDictionaryValue(key, message.getFrom().getLanguageCode()), message);
 	}
 }

@@ -51,12 +51,21 @@ public class MessageService {
 				break;
 
 			case TYPE_GROUP_NAME:
-				userGroupService.typeGroupName(message, user);
+				userGroupService.createUserGroupStep1(message, user);
 				break;
 
 			case REMOVE_CLASS_STATUS:
-				userGroupService.removeClassEnterName(message, user);
+				userGroupService.removeUserGroupStep1(message, user);
 				break;
+
+			case ADD_TO_CLASS_STATUS2:
+				userGroupService.addUserGroupStep2(message, user);
+				break;
+
+			case ADD_TO_CLASS_STATUS:
+				userGroupService.addToUserGroupStep0(message, user);
+				break;
+
 
 			default:
 				throw new BotException(message);

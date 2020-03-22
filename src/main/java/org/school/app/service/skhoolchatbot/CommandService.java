@@ -67,7 +67,7 @@ public class CommandService {
 				break;
 
 			case TelegramCommands.REMOVE_CLASS:
-				userGroupService.removeClass(message, user);
+				userGroupService.removeUserGroup(message, user);
 				break;
 
 			case TelegramCommands.ADD_TO_CLASS:

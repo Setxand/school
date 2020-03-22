@@ -1,6 +1,5 @@
 package org.school.app.service;
 
-import org.school.app.exception.BotException;
 import org.school.app.model.TestProcess;
 import org.school.app.repository.TestProcessRepository;
 import org.springframework.stereotype.Service;
@@ -8,9 +7,6 @@ import telegram.Message;
 
 import javax.transaction.Transactional;
 import java.util.Optional;
-
-import static org.school.app.config.DictionaryKeysConfig.USER_HAS_TEST_NOW;
-import static org.school.app.utils.DictionaryUtil.getDictionaryValue;
 
 @Service
 public class TestProcessService {
@@ -39,11 +35,9 @@ public class TestProcessService {
 	}
 
 	private void setActive(TestProcess testProcess, Integer chatId, String languageCode) {
-		Optional<TestProcess> byChatIdAndActiveIsTrue = testProcessRepo.findByUserChatIdAndActiveIsTrue(chatId);
+		Optional<TestProcess> activeProcess = testProcessRepo.findByUserChatIdAndActiveIsTrue(chatId);
+		activeProcess.ifPresent(process -> process.setActive(false));
 
-		if (!byChatIdAndActiveIsTrue.isPresent()) {
-			testProcess.setActive(true);
-		}
-		else throw new BotException(getDictionaryValue(USER_HAS_TEST_NOW, languageCode), testProcess.getSenderChatId());
+		testProcess.setActive(true);
 	}
 }

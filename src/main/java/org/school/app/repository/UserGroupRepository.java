@@ -9,6 +9,6 @@ import org.springframework.data.jpa.repository.Query;
 public interface UserGroupRepository extends JpaRepository<UserGroup, String> {
 
 	@Query(nativeQuery = true, value = "select * from user_group where name like %?1%")
-	Page<UserGroup> findByNames(String name, Pageable pageable);
+	Page<UserGroup> findByName(String name, Pageable pageable);
 
 }

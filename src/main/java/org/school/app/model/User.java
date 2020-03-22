@@ -25,7 +25,11 @@ public class User {
 		CHOOSE_TEST_BOX_FOR_USER_USTATUS,
 		TYPE_GROUP_NAME,
 		REMOVE_CLASS_STATUS,
-		REMOVE_CLASS_STATUS1
+		REMOVE_CLASS_STATUS1,
+		ADD_TO_CLASS_STATUS,
+		ADD_TO_CLASS_STATUS1,
+		ADD_TO_CLASS_STATUS2,
+		ADD_TO_CLASS_STATUS3
 
 	}
 
@@ -36,6 +40,7 @@ public class User {
 	private Integer chatId;
 	private String name;
 	private Integer assigneeTestChatId;
+	private String metaInf;
 
 	@Enumerated(EnumType.STRING)
 	private UserStatus status;

@@ -49,7 +49,15 @@ public class CallBackQueryService {
 				break;
 
 			case REMOVE_CLASS_STATUS1:
-				userGroupService.removeUserGroupStep1(callBackQuery, user);
+				userGroupService.addUserGroupStep2(callBackQuery, user);
+				break;
+
+			case ADD_TO_CLASS_STATUS1:
+				userGroupService.addToUserGroupStep1(callBackQuery, user);
+				break;
+
+			case ADD_TO_CLASS_STATUS3:
+				userGroupService.addToUserGroupStep3(callBackQuery, user);
 				break;
 
 			default:
