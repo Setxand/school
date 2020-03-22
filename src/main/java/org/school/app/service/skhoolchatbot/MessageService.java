@@ -50,6 +50,9 @@ public class MessageService {
 				testService.chooseTestBoxByStatus(message, user);
 				break;
 
+			case TYPE_GROUP_NAME:
+				userGroupService.typeGroupName(message, user);
+
 			default:
 				throw new BotException(message);
 		}

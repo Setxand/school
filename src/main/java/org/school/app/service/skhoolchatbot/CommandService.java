@@ -16,16 +16,25 @@ import static org.school.app.utils.DictionaryUtil.getDictionaryValue;
 public class CommandService {
 
 	public interface TelegramCommands {
+
 		public static final String START = "/start";
 		public static final String START_TEST = "/starttest";
 		public static final String SEND_TEST = "/sendtest";
+		public static final String CREATE_CLASS = "/createclass";
+		public static final String ADD_TO_CLASS = "/addtoclass";
+		public static final String REMOVE_FROM_CLASS = "/removefromclass";
+		public static final String REMOVE_CLASS = "/removeclass";
+
 	}
+
 	private final TelegramClient telegramClient;
 	private final TestService testService;
+	private final UserGroupService userGroupService;
 
-	public CommandService(TelegramClient telegramClient, TestService testService) {
+	public CommandService(TelegramClient telegramClient, TestService testService, UserGroupService userGroupService) {
 		this.telegramClient = telegramClient;
 		this.testService = testService;
+		this.userGroupService = userGroupService;
 	}
 
 	@Transactional
@@ -46,6 +55,10 @@ public class CommandService {
 				testService.sendTest(message, user);
 				break;
 
+			case TelegramCommands.CREATE_CLASS:
+				userGroupService.createUserGroup(message, user);
+				break;
+
 			default:
 				throw new BotException(getDictionaryValue(UNKNOWN_COMMAND,
 						message.getFrom().getLanguageCode()), message);
@@ -58,7 +71,6 @@ public class CommandService {
 
 	private void start(Message message, User user) {
 		telegramClient.helloMessage(message);
-
 	}
 
 }

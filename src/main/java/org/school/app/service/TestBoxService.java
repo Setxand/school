@@ -64,7 +64,6 @@ public class TestBoxService {
 		while (!testBoxes.isEmpty()) {
 
 			testBoxes.forEach(t -> {
-				logger.info("restTemplate.postForEntity(" + query + " + \"/v1/tests\", DtoUtil.testBox(t), Void.class);");
 				restTemplate.postForEntity(query + "/v1/tests", DtoUtil.testBox(t), Void.class);
 			});
 
