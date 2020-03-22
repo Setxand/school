@@ -63,6 +63,10 @@ public class CommandService {
 				userGroupService.removeClass(message, user);
 				break;
 
+			case TelegramCommands.ADD_TO_CLASS:
+				userGroupService.addToUserGroup(message, user);
+				break;
+
 			default:
 				throw new BotException(getDictionaryValue(UNKNOWN_COMMAND,
 						message.getFrom().getLanguageCode()), message);

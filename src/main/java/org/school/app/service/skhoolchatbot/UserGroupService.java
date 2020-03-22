@@ -86,6 +86,10 @@ public class UserGroupService {
 		telegramClient.simpleMessage(UGROUP_REMOVE_SUCCESS, languageCode, message);
 	}
 
+	public void addToUserGroup(Message message, User user) {
+
+	}
+
 	private String getTextMessage(DictionaryKeysConfig key, Message message) {
 		return getDictionaryValue(key, message.getFrom().getLanguageCode());
 	}
