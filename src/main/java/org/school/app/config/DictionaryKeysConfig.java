@@ -2,6 +2,7 @@ package org.school.app.config;
 
 public enum DictionaryKeysConfig {
 
+	HELLO_MESSAGE,
 	USER_ID_INVALID,
 	SYSTEM_ERROR,
 	CHOOSE_TEST_BOX_DICTIONARY,

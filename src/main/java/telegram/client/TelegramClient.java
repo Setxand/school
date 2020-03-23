@@ -1,5 +1,7 @@
 package telegram.client;
 
+import org.school.app.config.DictionaryKeysConfig;
+import org.school.app.utils.DictionaryUtil;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpEntity;
@@ -68,7 +70,8 @@ public abstract class TelegramClient {
 	}
 
 	public void helloMessage(Message message) {
-		String helloMessage = ResourceBundle.getBundle("dictionary").getString("HELLO_MESSAGE");
+		String helloMessage = DictionaryUtil
+				.getDictionaryValue(DictionaryKeysConfig.HELLO_MESSAGE, message.getFrom().getLanguageCode());
 		int chatId = message.getChat().getId();
 		sendMessage(new TelegramRequest(helloMessage, chatId, message.getPlatform()));
 	}
