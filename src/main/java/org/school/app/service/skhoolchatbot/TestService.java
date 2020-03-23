@@ -18,7 +18,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.school.app.config.DictionaryKeysConfig.*;
-import static org.school.app.model.User.UserStatus.*;
+import static org.school.app.model.User.UserStatus.TYPE_NAME_USTATUS;
+import static org.school.app.model.User.UserStatus.TYPE_TEST_BOX_FOR_USER_USTATUS;
 import static org.school.app.utils.DictionaryUtil.getDictionaryValue;
 
 @Service
@@ -43,7 +44,7 @@ public class TestService {
 		user.setStatus(userStatus);
 	}
 
-	public void chooseTestBoxByStatus(Message message, User user) {
+	public void chooseTestBox(Message message, User user, User.UserStatus status) {
 		List<TestBox> testBoxes = testBoxService.getTestBoxesByName(message.getText());
 
 		if (testBoxes.isEmpty()) {
@@ -51,11 +52,10 @@ public class TestService {
 		}
 
 		telegramClient.sendTextBoxesAsButtons(testBoxes,
-				DictionaryUtil.getDictionaryValue(TYPE_TEST_BOX_DICTIONARY,
+				DictionaryUtil.getDictionaryValue(TYPE_TEST_BOX_DICTIONARY,////todo change to choose dict.
 						message.getFrom().getLanguageCode()), message);
 
-		user.setStatus(user.getStatus() == TYPE_TEST_BOX_FOR_USER_USTATUS ?
-				CHOOSE_TEST_BOX_FOR_USER_USTATUS : CHOOSE_TEST_BOX_USTATUS);
+		user.setStatus(status);
 	}
 
 	/**
@@ -65,7 +65,7 @@ public class TestService {
 	 *             'public void chooseTestBoxForUser(CallBackQuery callBackQuery, User user)' in the @param message.
 	 *             in this case chatId of sender is held till method 'ediInlineButtons(message, user)'
 	 */
-	public void choosedTestBox(Message message, String testBoxId, User user) {
+	public void choosedTestBox(Message message, String testBoxId, User user) { //todo rename all the methods related to this action
 		testProcessService.createTestProcess(testBoxId, user.getChatId(), message);
 
 		ediInlineButtons(message, user);

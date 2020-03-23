@@ -53,25 +53,6 @@ public class UserGroupHelper implements GroupServiceConstants {
 		user.setStatus(status);
 	}
 
-	public void saveUserGroupInfoAndSendTypeNameMessage(
-			CallBackQuery callBackQuery, User user, User.UserStatus status) {
-		user.setMetaInf(callBackQuery.getData());
-		Message message = callBackQuery.getMessage();
-		telegramClient.simpleMessage(TYPE_NAME, message);
-		user.setStatus(status);
-	}
-
-	public void sendGroupNamesForUsers(Message message, User user, User.UserStatus status) {//todo fix method names
-		Page<UserGroup> userGroups = userGroupRepo.findByName(message.getText(), PAGEABLE);
-		telegramClient.sendUserGroupNames(userGroups, getTextMessage(CHOOSE_USER_GROUP, message), message);
-		user.setStatus(status);
-	}
-
-	public void sendTypeName(Message message, User user, User.UserStatus status) {
-		telegramClient.simpleMessage(NAME_OF_UGROUP, message);
-		user.setStatus(status);
-	}
-
 	public void removeUserGroupStep2(CallBackQuery callBackQuery, User user) {
 		String userGroupId = callBackQuery.getData();
 		userGroupRepo.deleteById(userGroupId);

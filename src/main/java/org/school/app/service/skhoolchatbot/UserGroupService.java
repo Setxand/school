@@ -6,6 +6,7 @@ import org.school.app.model.User;
 import org.school.app.model.UserGroup;
 import org.school.app.repository.UserGroupRepository;
 import org.school.app.utils.DictionaryUtil;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import telegram.CallBackQuery;
 import telegram.Message;
@@ -13,7 +14,8 @@ import telegram.Message;
 import java.util.List;
 
 import static org.school.app.config.DictionaryKeysConfig.*;
-import static org.school.app.model.User.UserStatus.*;
+import static org.school.app.model.User.UserStatus.ADD_TO_CLASS_STATUS3;
+import static org.school.app.model.User.UserStatus.REMOVE_FROM_CLASS_STATUS4;
 import static org.school.app.utils.DictionaryUtil.getDictionaryValue;
 
 @Service
@@ -23,11 +25,14 @@ public class UserGroupService implements GroupServiceConstants {
 	private final TelegramClient telegramClient;
 	private final UserGroupRepository userGroupRepo;
 	private final UserGroupHelper userGroupHelper;
+	private final TestService testService;
 
-	public UserGroupService(UserService userService, TelegramClient telegramClient, UserGroupRepository userGroupRepo) {
+	public UserGroupService(UserService userService, TelegramClient telegramClient,
+							UserGroupRepository userGroupRepo, TestService testService) {
 		this.userService = userService;
 		this.telegramClient = telegramClient;
 		this.userGroupRepo = userGroupRepo;
+		this.testService = testService;
 		this.userGroupHelper = new UserGroupHelper(userService, telegramClient, userGroupRepo);
 	}
 
@@ -45,11 +50,6 @@ public class UserGroupService implements GroupServiceConstants {
 		user.setStatus(User.UserStatus.CHOOSE_USER_USTATUS);
 	}
 
-	public void createUserGroup(Message message, User user) {
-		telegramClient.simpleMessage(getDictionaryValue(NAME_OF_UGROUP, message.getFrom().getLanguageCode()), message);
-		user.setStatus(User.UserStatus.TYPE_GROUP_NAME);
-	}
-
 	public void createUserGroupStep1(Message message, User user) {
 		UserGroup userGroup = new UserGroup();
 		userGroup.setName(message.getText());
@@ -60,10 +60,6 @@ public class UserGroupService implements GroupServiceConstants {
 						message.getFrom().getLanguageCode(), userGroup.getName()), message);
 
 		user.setStatus(null);
-	}
-
-	public void removeUserFromGroup(Message message, User user) {
-		userGroupHelper.sendTypeName(message, user, REMOVE_FROM_CLASS_STATUS1);
 	}
 
 	public void removeUserGroup(Message message, User user) {
@@ -78,14 +74,6 @@ public class UserGroupService implements GroupServiceConstants {
 		userGroupHelper.removeUserGroupStep2(callBackQuery, user);
 	}
 
-	public void addToUserGroup(Message message, User user) {
-		userGroupHelper.sendTypeName(message, user, ADD_TO_CLASS_STATUS);
-	}
-
-	public void addToUserGroupStep1(CallBackQuery callBackQuery, User user) {
-		userGroupHelper.saveUserGroupInfoAndSendTypeNameMessage(callBackQuery, user, ADD_TO_CLASS_STATUS2);
-	}
-
 	public void addUserGroupStep2(Message message, User user) {
 		userGroupHelper.userGroupActionsSendUsersAsButtons(message, user, ADD_TO_CLASS_STATUS3);
 	}
@@ -94,23 +82,27 @@ public class UserGroupService implements GroupServiceConstants {
 		userGroupHelper.addToUserGroupFinalStep(callBackQuery, user);
 	}
 
-	public void addToUserGroupStep0(Message message, User user) {
-		userGroupHelper.sendGroupNamesForUsers(message, user, ADD_TO_CLASS_STATUS1);
-	}
-
-	public void removeUserFromGroupStep1(Message message, User user) {
-		userGroupHelper.sendGroupNamesForUsers(message, user, REMOVE_FROM_CLASS_STATUS2);
-	}
-
-	public void removeUserFromGroupStep2(CallBackQuery callBackQuery, User user) {
-		userGroupHelper.saveUserGroupInfoAndSendTypeNameMessage(callBackQuery, user, REMOVE_FROM_CLASS_STATUS3);
-	}
-
 	public void removeUserFromGroupStep3(Message message, User user) {
 		userGroupHelper.userGroupActionsSendUsersAsButtons(message, user, REMOVE_FROM_CLASS_STATUS4);
 	}
 
 	public void removeUserFromGroupStep4(CallBackQuery callBackQuery, User user) {
 		userGroupHelper.removeUserGroupFinalStep(callBackQuery, user);
+	}
+
+	public Page<UserGroup> findByName(String text) {
+		return userGroupRepo.findByName(text, PAGEABLE);
+	}
+
+	public void sendTestForUserGroupFinalStep(CallBackQuery callBackQuery, User user) {
+		String testBoxId = callBackQuery.getData();
+		String userGroupId = user.getMetaInf();
+
+		UserGroup userGroup = userGroupRepo
+				.findById(userGroupId).orElseThrow(() -> new IllegalArgumentException(INVALID_UGROUP_ID));
+
+		userGroup.getUsers().forEach(u -> {
+			testService.choosedTestBox(callBackQuery.getMessage(), testBoxId, u);
+		});
 	}
 }

@@ -10,7 +10,7 @@ import telegram.client.TelegramClient;
 import javax.transaction.Transactional;
 
 import static org.school.app.config.DictionaryKeysConfig.UNKNOWN_COMMAND;
-import static org.school.app.model.User.UserStatus.TYPE_TEST_BOX_USTATUS;
+import static org.school.app.model.User.UserStatus.*;
 import static org.school.app.utils.DictionaryUtil.getDictionaryValue;
 
 @Service
@@ -25,18 +25,23 @@ public class CommandService {
 		public static final String ADD_TO_CLASS = "/addtoclass";
 		public static final String REMOVE_FROM_CLASS = "/removefromclass";
 		public static final String REMOVE_CLASS = "/removeclass";
+		public static final String SEND_TEST_TO_CLASS = "/sendtesttoclass";
 
 	}
 
 	private final TelegramClient telegramClient;
 	private final TestService testService;
 	private final UserGroupService userGroupService;
+	private final SendActionService sendActionService;
+
 	@Value("${id.admin}") private String adminId;
 
-	public CommandService(TelegramClient telegramClient, TestService testService, UserGroupService userGroupService) {
+	public CommandService(TelegramClient telegramClient, TestService testService, UserGroupService userGroupService,
+						  SendActionService sendActionService) {
 		this.telegramClient = telegramClient;
 		this.testService = testService;
 		this.userGroupService = userGroupService;
+		this.sendActionService = sendActionService;
 	}
 
 	@Transactional
@@ -63,7 +68,7 @@ public class CommandService {
 				break;
 
 			case TelegramCommands.CREATE_CLASS:
-				userGroupService.createUserGroup(message, user);
+				sendActionService.typeGroupName(message, user, TYPE_GROUP_NAME);
 				break;
 
 			case TelegramCommands.REMOVE_CLASS:
@@ -71,11 +76,15 @@ public class CommandService {
 				break;
 
 			case TelegramCommands.ADD_TO_CLASS:
-				userGroupService.addToUserGroup(message, user);
+				sendActionService.sendTypeName(message, user, ADD_TO_CLASS_STATUS);
 				break;
 
 			case TelegramCommands.REMOVE_FROM_CLASS:
-				userGroupService.removeUserFromGroup(message, user);
+				sendActionService.sendTypeName(message, user, REMOVE_FROM_CLASS_STATUS1);
+				break;
+
+			case TelegramCommands.SEND_TEST_TO_CLASS:
+				sendActionService.typeGroupName(message, user, SEND_TEST_TO_CLASS_STATUS1);
 				break;
 
 			default:

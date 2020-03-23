@@ -7,17 +7,22 @@ import telegram.Message;
 
 import javax.transaction.Transactional;
 
+import static org.school.app.model.User.UserStatus.*;
+
 @Service
 public class MessageService {
 
 	private final CommandService commandService;
 	private final TestService testService;
 	private final UserGroupService userGroupService;
+	private final SendActionService sendActionService;
 
-	public MessageService(CommandService commandService, TestService testService, UserGroupService userGroupService) {
+	public MessageService(CommandService commandService, TestService testService, UserGroupService userGroupService,
+						  SendActionService sendActionService) {
 		this.commandService = commandService;
 		this.testService = testService;
 		this.userGroupService = userGroupService;
+		this.sendActionService = sendActionService;
 	}
 
 	@Transactional
@@ -35,7 +40,7 @@ public class MessageService {
 
 		switch (user.getStatus()) {
 			case TYPE_TEST_BOX_USTATUS:
-				testService.chooseTestBoxByStatus(message, user);
+				testService.chooseTestBox(message, user, CHOOSE_TEST_BOX_USTATUS);
 				break;
 
 			case NEXT_QUESTION:
@@ -47,7 +52,7 @@ public class MessageService {
 				break;
 
 			case TYPE_TEST_BOX_FOR_USER_USTATUS:
-				testService.chooseTestBoxByStatus(message, user);
+				testService.chooseTestBox(message, user, CHOOSE_TEST_BOX_FOR_USER_USTATUS);
 				break;
 
 			case TYPE_GROUP_NAME:
@@ -63,15 +68,23 @@ public class MessageService {
 				break;
 
 			case ADD_TO_CLASS_STATUS:
-				userGroupService.addToUserGroupStep0(message, user);
+				sendActionService.sendGroupNamesForUsers(message, user, ADD_TO_CLASS_STATUS1);
 				break;
 
 			case REMOVE_FROM_CLASS_STATUS1:
-				userGroupService.removeUserFromGroupStep1(message, user);
+				sendActionService.sendGroupNamesForUsers(message, user, REMOVE_FROM_CLASS_STATUS2);
 				break;
 
 			case REMOVE_FROM_CLASS_STATUS3:
 				userGroupService.removeUserFromGroupStep3(message, user);
+				break;
+
+			case SEND_TEST_TO_CLASS_STATUS1:
+				sendActionService.sendGroupNamesForUsers(message, user, SEND_TEST_TO_CLASS_STATUS2);
+				break;
+
+			case SEND_TEST_TO_CLASS_STATUS3:
+				testService.chooseTestBox(message, user, SEND_TEST_TO_CLASS_STATUS4);
 				break;
 
 			default:
