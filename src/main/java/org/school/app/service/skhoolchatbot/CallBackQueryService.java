@@ -5,6 +5,7 @@ import org.school.app.model.User;
 import org.school.app.utils.DictionaryUtil;
 import org.springframework.stereotype.Service;
 import telegram.CallBackQuery;
+import telegram.Message;
 
 import javax.transaction.Transactional;
 
@@ -83,11 +84,25 @@ public class CallBackQueryService {
 				userGroupService.sendTestForUserGroupFinalStep(callBackQuery, user);
 				break;
 
+			case NEXT_QUESTION:
+				nextQuestion(callBackQuery, user);
+				break;
+
 			default:
 				throw new BotException(DictionaryUtil
 						.getDictionaryValue(CANT_NOW,
 								callBackQuery.getMessage().getFrom().getLanguageCode()), callBackQuery.getMessage());
 		}
 
+	}
+
+	private void nextQuestion(CallBackQuery callBackQuery, User user) {
+		Message message = callBackQuery.getMessage();
+		user.setMessageIdToEdit(callBackQuery.getMessage().getMessageId());
+
+		String answer = callBackQuery.getData();
+		message.setText(answer); //Answer from the user is set
+
+		testService.answer(message, user);///todo remove from message service
 	}
 }

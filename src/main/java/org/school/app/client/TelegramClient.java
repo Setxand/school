@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 import telegram.Markup;
 import telegram.Message;
+import telegram.TelegramRequest;
 import telegram.button.Button;
 
 import java.util.List;
@@ -34,11 +35,16 @@ public class TelegramClient extends telegram.client.TelegramClient {
 		sendButtons(buttonListMarkup, text, message);
 	}
 
-	public void sendQuestion(Question question, Message message) {
+	public void sendQuestion(Question question, Message message, Integer messageIdToEdit) {
 		Markup buttonListMarkup = createButtonListMarkup(false,
-				question.getAnswers().stream().map(this::createKeyboardButton).toArray(Button[]::new));
+				question.getAnswers().stream()
+						.map(a -> createInlineButton(a, a.substring(0, 2))).toArray(Button[]::new));
 
-		sendButtons(buttonListMarkup, question.getName(), message);
+		if (messageIdToEdit != null) {
+			editMessageText(buttonListMarkup, message, question.getName());
+		}
+		else
+			sendButtons(buttonListMarkup, question.getName(), message);
 	}
 
 	public void sendUserGroupNames(Page<UserGroup> userGroups, String text, Message message) {
@@ -49,5 +55,16 @@ public class TelegramClient extends telegram.client.TelegramClient {
 
 	public void simpleMessage(DictionaryKeysConfig key, Message message) {
 		simpleMessage(DictionaryUtil.getDictionaryValue(key, message.getFrom().getLanguageCode()), message);
+	}
+
+	public void editInlineButtons(Markup markup, Message message, String messageText) {
+		TelegramRequest request = new TelegramRequest();
+		request.command = "/editMessageReplyMarkup";
+		request.messageId = message.getMessageId();
+		request.setText(messageText);
+		request.setChatId(message.getChat().getId());
+		request.setMarkup(markup);
+		request.setPlatform(message.getPlatform());
+		sendMessage(request);
 	}
 }

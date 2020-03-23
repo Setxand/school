@@ -98,6 +98,7 @@ public class MessageService {
 	}
 
 	private void nextQuestion(Message message, User user) {
+		user.setMessageIdToEdit(message.getMessageId());
 		testService.answer(message, user);
 	}
 

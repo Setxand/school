@@ -132,6 +132,17 @@ public abstract class TelegramClient {
 		sendMessage(request);
 	}
 
+	public void editMessageText(Markup markup, Message message, String messageText) {
+		TelegramRequest request = new TelegramRequest();
+		request.command = "/editMessageText";
+		request.messageId = message.getMessageId();
+		request.setChatId(message.getChat().getId());
+		request.setText(messageText);
+		request.setMarkup(markup);
+		request.setPlatform(message.getPlatform());
+		sendMessage(request);
+	}
+
 	public void deleteMessage(Message message) {
 		TelegramRequest request = new TelegramRequest();
 		request.command = "/deleteMessage";

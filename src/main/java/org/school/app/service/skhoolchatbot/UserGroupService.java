@@ -104,5 +104,7 @@ public class UserGroupService implements GroupServiceConstants {
 		userGroup.getUsers().forEach(u -> {
 			testService.choosedTestBox(callBackQuery.getMessage(), testBoxId, u);
 		});
+
+		user.setMetaInf(null);
 	}
 }

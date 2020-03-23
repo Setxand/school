@@ -44,6 +44,7 @@ public class UserGroupHelper implements GroupServiceConstants {
 
 		userGroup.getUsers().add(userToAdd);
 		user.setStatus(null);
+		user.setMetaInf(null);
 	}
 
 	public void userGroupActionsSendUsersAsButtons(Message message, User user, User.UserStatus status) {
@@ -88,5 +89,6 @@ public class UserGroupHelper implements GroupServiceConstants {
 
 		userGroup.getUsers().remove(userToRemove);
 		user.setStatus(null);
+		user.setMetaInf(null);
 	}
 }

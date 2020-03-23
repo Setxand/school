@@ -125,7 +125,8 @@ public class TestService {
 		}
 
 		Question question = testBox.getQuestions().get(testProcess.getCurrentTestStep());
-		telegramClient.sendQuestion(question, message);
+		telegramClient.sendQuestion(question, message, user.getMessageIdToEdit());
+		user.setMessageIdToEdit(null);
 	}
 
 	private String getAnswerVariant(String text) {
@@ -136,8 +137,8 @@ public class TestService {
 		String testEndedMessage = String.format(DictionaryUtil
 				.getDictionaryValue(TEST_ENDED, message.getFrom().getLanguageCode()), testProcess.getMark());
 
-		telegramClient.simpleMessage(testEndedMessage, message);
-		telegramClient.removeKeyboardButtons(message);
+		telegramClient.editMessageText(null, message, testEndedMessage);
+
 		testProcess.setActive(false);
 		testProcess.setEndTime(LocalDateTime.now());
 
