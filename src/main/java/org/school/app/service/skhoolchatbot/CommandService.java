@@ -9,6 +9,7 @@ import telegram.client.TelegramClient;
 
 import javax.transaction.Transactional;
 
+import static org.school.app.config.DictionaryKeysConfig.ACCESS_RESTRICTED;
 import static org.school.app.config.DictionaryKeysConfig.UNKNOWN_COMMAND;
 import static org.school.app.model.User.UserStatus.*;
 import static org.school.app.utils.DictionaryUtil.getDictionaryValue;
@@ -49,22 +50,22 @@ public class CommandService {
 		user.setStatus(null);
 		String command = message.getText();
 
+		if (message.getChat().getId().equals(Integer.valueOf(adminId)) && !command.equals(TelegramCommands.START)) {
+			throw new BotException(ACCESS_RESTRICTED, message);
+		}
+
 		switch (command) {
 			case TelegramCommands.START:
 				start(message, user);
 				break;
 
 			case TelegramCommands.START_TEST:
-				if (message.getChat().getId().equals(Integer.valueOf(adminId))) {
-					startTest(message, user);
-				}
+				startTest(message, user);
 
 				break;
 
 			case TelegramCommands.SEND_TEST:
-				if (message.getChat().getId().equals(Integer.valueOf(adminId))) {
-					testService.sendTest(message, user);
-				}
+				testService.sendTest(message, user);
 				break;
 
 			case TelegramCommands.CREATE_CLASS:
