@@ -12,9 +12,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -46,7 +48,11 @@ public class TestBoxService {
 	}
 
 	public TestBox getTestBox(String testId) {
-		return boxRepo.findById(testId).orElseThrow(() -> new IllegalArgumentException("Invalid test box ID"));
+		TestBox testBox = boxRepo.findById(testId).orElseThrow(() -> new IllegalArgumentException("Invalid test box ID"));
+		List<Question> questions = testBox.getQuestions();
+		questions.removeAll(questions.stream()
+				.filter(question -> StringUtils.isEmpty(question.getName())).collect(Collectors.toList()));
+		return testBox;
 	}
 
 	public void deleteTestBox(String testId) {
