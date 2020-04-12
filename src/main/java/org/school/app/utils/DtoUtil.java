@@ -19,6 +19,7 @@ public class DtoUtil {
 
 	private static QuestionDTO question(Question question) {
 		QuestionDTO dto = new QuestionDTO();
+		dto.id = question.getId();
 		dto.name = question.getName();
 		dto.answers = question.getAnswers();
 		dto.correctAnswer = question.getCorrectAnswer();

@@ -16,6 +16,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
@@ -74,6 +75,23 @@ public class TestBoxService {
 			});
 
 			testBoxes = getTestBoxes(pageRequest.next());
+		}
+	}
+
+	@Transactional
+	public void updateTestBox(TestBoxDTO dto) {
+		TestBox testBox = getTestBox(dto.id);
+		Set<String> keys = dto.keys;
+
+		if (keys.contains("questions")) {
+			List<QuestionDTO> questions = dto.questions;
+
+			List<Question> questionsModels = questions.stream().map(this::createQuestion).collect(toList());
+			testBox.setQuestions(questionsModels);
+		}
+
+		if (keys.contains("name")){
+			testBox.setName(dto.name);
 		}
 	}
 

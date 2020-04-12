@@ -1,8 +1,9 @@
 package org.school.app;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
 
@@ -15,6 +16,11 @@ public class SchoolApplication {
 //		new SpringApplicationBuilder(SchoolApplication.class)
 //				.headless(false)
 //				.run(args);
+	}
+
+	@Bean
+	public ObjectMapper objectMapper() {
+		return new ObjectMapper();
 	}
 
 }
