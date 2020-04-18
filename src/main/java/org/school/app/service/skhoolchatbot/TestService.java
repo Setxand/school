@@ -110,7 +110,9 @@ public class TestService {
 	}
 
 	private void ediInlineButtons(Message message, User user) {
-		telegramClient.editInlineButtons(null, message);
+		if (user.getMessageIdToEdit() != null) {
+			telegramClient.editInlineButtons(null, message);
+		}
 		message.getChat().setId(user.getChatId()); // Destination to user, that is set to the method
 	}
 

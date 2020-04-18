@@ -1,5 +1,7 @@
 package org.school.app.service.skhoolchatbot;
 
+import org.apache.log4j.Logger;
+import org.school.app.client.Platform;
 import org.school.app.client.TelegramClient;
 import org.school.app.exception.BotException;
 import org.school.app.model.User;
@@ -9,6 +11,7 @@ import org.school.app.utils.DictionaryUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import telegram.CallBackQuery;
+import telegram.Chat;
 import telegram.Message;
 
 import java.util.List;
@@ -26,6 +29,8 @@ public class UserGroupService implements GroupServiceConstants {
 	private final UserGroupRepository userGroupRepo;
 	private final UserGroupHelper userGroupHelper;
 	private final TestService testService;
+
+	private static final Logger logger = Logger.getLogger(UserGroupService.class);
 
 	public UserGroupService(UserService userService, TelegramClient telegramClient,
 							UserGroupRepository userGroupRepo, TestService testService) {
@@ -102,9 +107,16 @@ public class UserGroupService implements GroupServiceConstants {
 				.findById(userGroupId).orElseThrow(() -> new IllegalArgumentException(INVALID_UGROUP_ID));
 
 		userGroup.getUsers().forEach(u -> {
-			testService.choosedTestBox(callBackQuery.getMessage(), testBoxId, u);
+			if (u.getMessageIdToEdit() != null) { ///TODO fix
+				logger.warn("MESSAGE ID TO EDIT MUST BE CLEAR BEFORE");
+				u.setMessageIdToEdit(null);
+			}
+			Message message = new Message(new Chat(user.getChatId()));
+			message.setPlatform(Platform.COMMON);
+			testService.choosedTestBox(message, testBoxId, u);
 		});
 
 		user.setMetaInf(null);
+		telegramClient.deleteMessage(callBackQuery.getMessage());
 	}
 }

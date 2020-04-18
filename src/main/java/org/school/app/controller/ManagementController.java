@@ -30,7 +30,7 @@ public class ManagementController {
 	@PatchMapping("/v1/tests")
 	public void updateTestBox(@RequestBody Map<String, Object> body) {
 		TestBoxDTO dto = objectMapper.convertValue(body, TestBoxDTO.class);
-		dto.keys = body.keySet	();
+		dto.keys = body.keySet();
 		testBoxService.updateTestBox(dto);
 	}
 

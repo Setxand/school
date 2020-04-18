@@ -22,6 +22,6 @@ public class UserGroup {
 
 	private String name;
 
-	@OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+	@ManyToMany(cascade = {CascadeType.PERSIST})
 	private List<User> users = new ArrayList<>();
 }

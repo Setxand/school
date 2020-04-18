@@ -41,14 +41,9 @@ public class TelegramClient extends telegram.client.TelegramClient {
 						.map(a -> createInlineButton(a, a.substring(0, 2))).toArray(Button[]::new));
 
 		if (messageIdToEdit != null) {
-			try {
-				editMessageText(buttonListMarkup, message, question.getName());
-			} catch (RuntimeException ex) {
-				sendButtons(buttonListMarkup, question.getName(), message);
-			}
 
-		}
-		else
+			editMessageText(buttonListMarkup, message, question.getName());///todo change trycatch to normal behaviour
+		} else
 			sendButtons(buttonListMarkup, question.getName(), message);
 	}
 

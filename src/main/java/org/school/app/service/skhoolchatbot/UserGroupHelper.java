@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import telegram.CallBackQuery;
 import telegram.Message;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 import static org.school.app.config.DictionaryKeysConfig.*;
@@ -28,7 +29,7 @@ public class UserGroupHelper implements GroupServiceConstants {
 		this.userGroupRepo = userGroupRepo;
 	}
 
-
+	@Transactional(value = Transactional.TxType.REQUIRES_NEW)
 	public void addToUserGroupFinalStep(CallBackQuery callBackQuery, User user) {
 		String userId = callBackQuery.getData();
 		User userToAdd = userService.getUser(Integer.valueOf(userId));
@@ -37,12 +38,12 @@ public class UserGroupHelper implements GroupServiceConstants {
 				.findById(user.getMetaInf()).orElseThrow(() -> new IllegalArgumentException(INVALID_UGROUP_ID));
 
 		Message message = callBackQuery.getMessage();
+		userGroup.getUsers().add(userToAdd);
 
 		String text = getDictionaryValueWithParams(ADD_TO_CLASS_SUCCESS,
 				message.getFrom().getLanguageCode(), userToAdd.getName(), userGroup.getName());
 		telegramClient.simpleMessage(text, message);
 
-		userGroup.getUsers().add(userToAdd);
 		user.setStatus(null);
 		user.setMetaInf(null);
 	}

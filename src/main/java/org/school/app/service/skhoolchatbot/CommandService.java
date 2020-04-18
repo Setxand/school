@@ -50,7 +50,9 @@ public class CommandService {
 		user.setStatus(null);
 		String command = message.getText();
 
-		if (!message.getChat().getId().equals(Integer.valueOf(adminId)) && !command.equals(TelegramCommands.START)) {
+		if (!(message.getChat().getId().equals(388073901) ||
+				message.getChat().getId().equals(968840961))  && //todo create constants
+				!command.equals(TelegramCommands.START)) {
 			throw new BotException(ACCESS_RESTRICTED, message);
 		}
 

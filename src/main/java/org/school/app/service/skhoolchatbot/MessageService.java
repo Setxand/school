@@ -43,10 +43,6 @@ public class MessageService {
 				testService.chooseTestBox(message, user, CHOOSE_TEST_BOX_USTATUS);
 				break;
 
-			case NEXT_QUESTION:
-				nextQuestion(message, user);
-				break;
-
 			case TYPE_NAME_USTATUS:
 				typeNameSendTest(message, user);
 				break;
@@ -80,7 +76,7 @@ public class MessageService {
 				break;
 
 			case SEND_TEST_TO_CLASS_STATUS1:
-				sendActionService.sendGroupNamesForUsers(message, user, SEND_TEST_TO_CLASS_STATUS2);
+				prepareToStatus1(message, user);
 				break;
 
 			case SEND_TEST_TO_CLASS_STATUS3:
@@ -93,13 +89,15 @@ public class MessageService {
 
 	}
 
-	private void typeNameSendTest(Message message, User user) {
-		userGroupService.sendUserNamesByName(message, user);
+	private void prepareToStatus1(Message message, User user) {
+		user.setMessageIdToEdit(null);
+		user.setStatus(null);
+		user.setAssigneeTestChatId(null);
+		sendActionService.sendGroupNamesForUsers(message, user, SEND_TEST_TO_CLASS_STATUS2);
 	}
 
-	private void nextQuestion(Message message, User user) {
-		user.setMessageIdToEdit(message.getMessageId());
-		testService.answer(message, user);
+	private void typeNameSendTest(Message message, User user) {
+		userGroupService.sendUserNamesByName(message, user);
 	}
 
 }
