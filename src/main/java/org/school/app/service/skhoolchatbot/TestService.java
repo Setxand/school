@@ -52,7 +52,7 @@ public class TestService {
 		}
 
 		telegramClient.sendTextBoxesAsButtons(testBoxes,
-				DictionaryUtil.getDictionaryValue(TYPE_TEST_BOX_DICTIONARY,////todo change to choose dict.
+				DictionaryUtil.getDictionaryValue(TYPE_TEST_BOX_DICTIONARY,
 						message.getFrom().getLanguageCode()), message);
 
 		user.setStatus(status);

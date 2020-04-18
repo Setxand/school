@@ -9,6 +9,7 @@ import org.school.app.model.UserGroup;
 import org.school.app.repository.UserGroupRepository;
 import org.school.app.utils.DictionaryUtil;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import telegram.CallBackQuery;
 import telegram.Chat;
@@ -118,5 +119,9 @@ public class UserGroupService implements GroupServiceConstants {
 
 		user.setMetaInf(null);
 		telegramClient.deleteMessage(callBackQuery.getMessage());
+	}
+
+	public Page<UserGroup> getUserGroups(Pageable pageable) {
+		return userGroupRepo.findAll(pageable);
 	}
 }

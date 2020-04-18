@@ -2,7 +2,9 @@ package org.school.app.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.school.app.dto.TestBoxDTO;
+import org.school.app.dto.UserGroupDto;
 import org.school.app.service.TestBoxService;
+import org.school.app.service.skhoolchatbot.UserGroupService;
 import org.school.app.utils.DtoUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,6 +21,7 @@ public class ManagementController {
 
 	@Autowired TestBoxService testBoxService;
 	@Autowired ObjectMapper objectMapper;
+	@Autowired private UserGroupService userGroupService;
 
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("/v1/tests")
@@ -54,6 +57,11 @@ public class ManagementController {
 	@DeleteMapping("/v1/tests/{testId}")
 	public void deleteTestBot(@PathVariable String testId) {
 		testBoxService.deleteTestBox(testId);
+	}
+
+	@GetMapping("/v1/user-groups")
+	public Page<UserGroupDto> userGroups(Pageable pageable) {
+		return userGroupService.getUserGroups(pageable).map(DtoUtil::userGroup);
 	}
 
 	@ResponseStatus(HttpStatus.BAD_REQUEST)

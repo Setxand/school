@@ -25,7 +25,7 @@ public class SendActionService {
 		this.telegramClient = telegramClient;
 	}
 
-	public void sendGroupNamesForUsers(Message message, User user, User.UserStatus status) {//todo fix method names
+	public void sendGroupNamesForUsers(Message message, User user, User.UserStatus status) {
 		Page<UserGroup> userGroups = userGroupService.findByName(message.getText());
 
 		if (userGroups.isEmpty()) {

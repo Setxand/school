@@ -103,6 +103,6 @@ public class CallBackQueryService {
 		String answer = callBackQuery.getData();
 		message.setText(answer); //Answer from the user is set
 
-		testService.answer(message, user);///todo remove from message service
+		testService.answer(message, user);
 	}
 }
