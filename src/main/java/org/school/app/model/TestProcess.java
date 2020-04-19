@@ -40,6 +40,6 @@ public class TestProcess {
 	}
 
 	public String getEndTime() {
-		return endTime.format(DateTimeFormatter.ofPattern(DATE_FORMATTER));
+		return endTime != null ? endTime.format(DateTimeFormatter.ofPattern(DATE_FORMATTER)) : null;
 	}
 }

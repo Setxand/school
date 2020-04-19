@@ -3,6 +3,8 @@ package org.school.app.service;
 import org.apache.log4j.Logger;
 import org.school.app.model.TestProcess;
 import org.school.app.repository.TestProcessRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import telegram.Message;
 
@@ -43,5 +45,9 @@ public class TestProcessService {
 		}
 
 		return testProcesses.get(0);
+	}
+
+	public Page<TestProcess> getAllProcessesByUserId(Integer userId, Pageable pageable) {
+		return testProcessRepo.findPageByUserChatIdOrderByCreationTimeDesc(userId, pageable);
 	}
 }

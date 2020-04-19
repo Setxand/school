@@ -6,8 +6,8 @@ import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -23,5 +23,5 @@ public class UserGroup {
 	private String name;
 
 	@ManyToMany(cascade = {CascadeType.PERSIST})
-	private List<User> users = new ArrayList<>();
+	private Set<User> users = new HashSet<>();
 }

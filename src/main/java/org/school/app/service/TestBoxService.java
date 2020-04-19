@@ -95,6 +95,10 @@ public class TestBoxService {
 		}
 	}
 
+	public List<TestBox> getTestBoxesByIds(List<String> testIds) {
+		return boxRepo.findByIdIn(testIds);
+	}
+
 	private Question createQuestion(QuestionDTO q) {
 		Question question = new Question();
 		question.setName(q.name);

@@ -2,8 +2,12 @@ package org.school.app.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.school.app.dto.TestBoxDTO;
+import org.school.app.dto.TestProcessDTO;
 import org.school.app.dto.UserGroupDto;
+import org.school.app.model.TestBox;
+import org.school.app.model.TestProcess;
 import org.school.app.service.TestBoxService;
+import org.school.app.service.TestProcessService;
 import org.school.app.service.skhoolchatbot.UserGroupService;
 import org.school.app.utils.DtoUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,14 +18,17 @@ import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 public class ManagementController {
 
 	@Autowired TestBoxService testBoxService;
 	@Autowired ObjectMapper objectMapper;
-	@Autowired private UserGroupService userGroupService;
+	@Autowired UserGroupService userGroupService;
+	@Autowired TestProcessService testProcessService;
 
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("/v1/tests")
@@ -62,6 +69,21 @@ public class ManagementController {
 	@GetMapping("/v1/user-groups")
 	public Page<UserGroupDto> userGroups(Pageable pageable) {
 		return userGroupService.getUserGroups(pageable).map(DtoUtil::userGroup);
+	}
+
+	@GetMapping("/v1/test-processes/{userId}")
+	public Page<TestProcessDTO> getTestProcesses(@PathVariable Integer userId, Pageable pageable) {
+		Page<TestProcess> testProcessesModels = testProcessService.getAllProcessesByUserId(userId, pageable);
+
+		List<String> testIds = testProcessesModels.map(TestProcess::getCurrentTestId).getContent();
+		Map<String, String> testBoxMap = testBoxService.getTestBoxesByIds(testIds)
+				.stream().collect(Collectors.toMap(TestBox::getId, TestBox::getName));
+
+		return testProcessesModels.map(tp -> {
+			TestProcessDTO testProcessDTO = DtoUtil.testProcess(tp);
+			testProcessDTO.testName = testBoxMap.get(tp.getCurrentTestId());
+			return testProcessDTO;
+		});
 	}
 
 	@ResponseStatus(HttpStatus.BAD_REQUEST)

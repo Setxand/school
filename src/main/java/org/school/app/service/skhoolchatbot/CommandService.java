@@ -8,6 +8,7 @@ import telegram.Message;
 import telegram.client.TelegramClient;
 
 import javax.transaction.Transactional;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -35,7 +36,7 @@ public class CommandService {
 	private final TestService testService;
 	private final UserGroupService userGroupService;
 	private final SendActionService sendActionService;
-	private static final Set<Integer> ADMINS = new HashSet<>(968840961, 388073901);
+	private static final Set<Integer> ADMINS = new HashSet<>(Arrays.asList(968840961, 388073901));
 
 	@Value("${id.admin}") private String adminId;
 
@@ -52,8 +53,7 @@ public class CommandService {
 		user.setStatus(null);
 		String command = message.getText();
 
-		if (!(message.getChat().getId().equals(388073901) ||
-				message.getChat().getId().equals(968840961))  &&
+		if (!(ADMINS.contains(message.getChat().getId()))  &&
 				!command.equals(TelegramCommands.START)) {
 			throw new BotException(ACCESS_RESTRICTED, message);
 		}
