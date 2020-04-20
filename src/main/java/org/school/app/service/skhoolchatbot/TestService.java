@@ -1,5 +1,6 @@
 package org.school.app.service.skhoolchatbot;
 
+import org.apache.log4j.Logger;
 import org.school.app.client.TelegramClient;
 import org.school.app.config.DictionaryKeysConfig;
 import org.school.app.exception.BotException;
@@ -29,6 +30,8 @@ public class TestService {
 	private final TestBoxService testBoxService;
 	private final UserService userService;
 	private final TestProcessService testProcessService;
+
+	private static final Logger logger = Logger.getLogger(TestService.class);
 
 	public TestService(TelegramClient telegramClient, TestBoxService testBoxService, UserService userService,
 					   TestProcessService testProcessService) {
@@ -90,6 +93,11 @@ public class TestService {
 	public void chooseTestBoxForUser(CallBackQuery callBackQuery, User user) {
 		User assigneeUser = userService.getUser(user.getAssigneeTestChatId());
 		Message message = callBackQuery.getMessage();
+
+		if (user.getMessageIdToEdit() != null) {
+			logger.warn("MESSAGE ID TO EDIT MUST BE CLEAR BUT IT ISN'T");
+			user.setMessageIdToEdit(null);
+		}
 
 		choosedTestBox(message, callBackQuery.getData(), assigneeUser);
 	}
