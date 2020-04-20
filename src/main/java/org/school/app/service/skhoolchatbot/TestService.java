@@ -94,9 +94,9 @@ public class TestService {
 		User assigneeUser = userService.getUser(user.getAssigneeTestChatId());
 		Message message = callBackQuery.getMessage();
 
-		if (user.getMessageIdToEdit() != null) {
+		if (assigneeUser.getMessageIdToEdit() != null) {
 			logger.warn("MESSAGE ID TO EDIT MUST BE CLEAR BUT IT ISN'T");
-			user.setMessageIdToEdit(null);
+			assigneeUser.setMessageIdToEdit(null);
 		}
 
 		choosedTestBox(message, callBackQuery.getData(), assigneeUser);
