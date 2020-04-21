@@ -1,9 +1,11 @@
 package org.school.app.service.skhoolchatbot;
 
 import org.school.app.client.TelegramClient;
+import org.school.app.exception.BotException;
 import org.school.app.model.User;
 import org.school.app.model.UserGroup;
 import org.school.app.repository.UserGroupRepository;
+import org.school.app.utils.DictionaryUtil;
 import org.springframework.data.domain.Page;
 import telegram.CallBackQuery;
 import telegram.Message;
@@ -50,6 +52,12 @@ public class UserGroupHelper implements GroupServiceConstants {
 
 	public void userGroupActionsSendUsersAsButtons(Message message, User user, User.UserStatus status) {
 		List<User> users = userService.searchUsersByName(message.getText()).getContent();
+
+		if (users.isEmpty()) {
+			throw new BotException(DictionaryUtil
+					.getDictionaryValue(NO_SUCH_USER, message.getFrom().getLanguageCode()), message);
+		}
+
 		String dictionaryValue = getDictionaryValue(CHOOSE_USER_DICTIONARY, message.getFrom().getLanguageCode());
 		telegramClient.sendUsersAsButtons(users, dictionaryValue, message);
 		user.setStatus(status);

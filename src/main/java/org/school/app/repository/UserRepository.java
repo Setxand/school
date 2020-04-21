@@ -9,7 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface UserRepository extends JpaRepository<User, Integer> {
 
-	@Query(nativeQuery = true, value = "select * from user tb where tb.name like %?1%")
+	@Query(nativeQuery = true, value = "select * from user tb where tb.name like %?1% or " +
+			"tb.internal_nick_name like %?1%")
 	Page<User> findByName(String name, Pageable pageable);
 
 }
