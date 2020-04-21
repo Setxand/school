@@ -36,7 +36,12 @@ public class TelegramClient extends telegram.client.TelegramClient {
 	}
 
 	private String name(User u) {
-		return u.getName() + " (" + u.getInternalNickName() + ")";
+		String name = u.getName();
+		if (u.getInternalNickName() != null) {
+			name += " (" + u.getInternalNickName() + ")";
+		}
+
+		return name;
 	}
 
 	public void sendQuestion(Question question, Message message, Integer messageIdToEdit) {
