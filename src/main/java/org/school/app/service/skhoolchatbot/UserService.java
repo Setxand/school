@@ -1,6 +1,7 @@
 package org.school.app.service.skhoolchatbot;
 
 
+import org.school.app.dto.UserDataDTO;
 import org.school.app.model.User;
 import org.school.app.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
@@ -8,6 +9,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import telegram.Message;
+
+import javax.transaction.Transactional;
 
 @Service
 public class UserService {
@@ -40,5 +43,14 @@ public class UserService {
 	public User getUser(Integer userId) {
 		return userRepository.findById(userId).orElseThrow(
 				() -> new IllegalArgumentException(INVALID_USER_ID));
+	}
+
+	@Transactional
+	public void updateUser(UserDataDTO userDataDTO) {
+		User user = getUser(userDataDTO.id);
+
+		if (userDataDTO.keys.contains("nickName")) {
+			user.setInternalNickName(userDataDTO.nickName);
+		}
 	}
 }

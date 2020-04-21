@@ -50,6 +50,7 @@ public class User {
 	private Integer assigneeTestChatId;
 	private String metaInf;
 	private Integer messageIdToEdit;
+	private String internalNickName;
 
 	@Enumerated(EnumType.STRING)
 	private UserStatus status;

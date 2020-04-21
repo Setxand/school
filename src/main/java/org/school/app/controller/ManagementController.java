@@ -3,12 +3,14 @@ package org.school.app.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.school.app.dto.TestBoxDTO;
 import org.school.app.dto.TestProcessDTO;
+import org.school.app.dto.UserDataDTO;
 import org.school.app.dto.UserGroupDto;
 import org.school.app.model.TestBox;
 import org.school.app.model.TestProcess;
 import org.school.app.service.TestBoxService;
 import org.school.app.service.TestProcessService;
 import org.school.app.service.skhoolchatbot.UserGroupService;
+import org.school.app.service.skhoolchatbot.UserService;
 import org.school.app.utils.DtoUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -29,6 +31,7 @@ public class ManagementController {
 	@Autowired ObjectMapper objectMapper;
 	@Autowired UserGroupService userGroupService;
 	@Autowired TestProcessService testProcessService;
+	@Autowired UserService userService;
 
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("/v1/tests")
@@ -84,6 +87,14 @@ public class ManagementController {
 			testProcessDTO.testName = testBoxMap.get(tp.getCurrentTestId());
 			return testProcessDTO;
 		});
+	}
+
+	@PatchMapping("/v1/users")
+	public void updateUser(@RequestBody Map<String, Object> body) {
+		UserDataDTO userDataDTO = objectMapper.convertValue(body, UserDataDTO.class);
+		userDataDTO.keys = body.keySet();
+
+		userService.updateUser(userDataDTO);
 	}
 
 	@ResponseStatus(HttpStatus.BAD_REQUEST)

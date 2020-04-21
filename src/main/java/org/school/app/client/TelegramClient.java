@@ -31,8 +31,12 @@ public class TelegramClient extends telegram.client.TelegramClient {
 
 	public void sendUsersAsButtons(List<User> users, String text, Message message) {
 		Markup buttonListMarkup = createButtonListMarkup(false, users.stream()
-				.map(u -> createInlineButton(u.getName(), u.getChatId().toString())).toArray(Button[]::new));
+				.map(u -> createInlineButton(name(u), u.getChatId().toString())).toArray(Button[]::new));
 		sendButtons(buttonListMarkup, text, message);
+	}
+
+	private String name(User u) {
+		return u.getName() + " (" + u.getInternalNickName() + ")";
 	}
 
 	public void sendQuestion(Question question, Message message, Integer messageIdToEdit) {

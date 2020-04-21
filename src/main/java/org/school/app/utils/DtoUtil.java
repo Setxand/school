@@ -40,6 +40,7 @@ public class DtoUtil {
 		dto.id = user.getChatId();
 		dto.name = user.getName();
 		dto.testProcesses = user.getTestProcesses().stream().map(DtoUtil::testProcess).collect(toList());
+		dto.nickName = user.getInternalNickName();
 		return dto;
 	}
 
