@@ -1,5 +1,6 @@
 package org.school.app.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.school.app.dto.TestBoxDTO;
 import org.school.app.dto.TestProcessDTO;
@@ -101,7 +102,8 @@ public class ManagementController {
 	}
 
 	@PostMapping("/v1/users")
-	public void createUsers(@RequestBody List<User> users) {
+	public void createUsers(@RequestBody String body) {
+		List<User> users = objectMapper.convertValue(body, new TypeReference<List<User>>() { });
 		userService.createUsers(users);
 	}
 

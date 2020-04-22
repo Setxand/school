@@ -13,6 +13,7 @@ import telegram.Message;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -68,8 +69,12 @@ public class UserService {
 	@Transactional
 	public void createUsers(List<User> users) {
 		users.forEach(u -> {
-			userRepository.deleteById(u.getChatId());
+			Optional<User> user = userRepository.findById(u.getChatId());
+			if (user.isPresent()) {
+				userRepository.deleteById(u.getChatId());
+			}
 			userRepository.saveAndFlush(u);
+
 		});
 	}
 }
