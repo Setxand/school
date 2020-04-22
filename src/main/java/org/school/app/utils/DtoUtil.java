@@ -35,7 +35,7 @@ public class DtoUtil {
 		return dto;
 	}
 
-	private static UserDataDTO user(User user) {
+	public static UserDataDTO user(User user) {
 		UserDataDTO dto = new UserDataDTO();
 		dto.id = user.getChatId();
 		dto.name = user.getName();

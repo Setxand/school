@@ -7,6 +7,8 @@ import org.school.app.dto.UserDataDTO;
 import org.school.app.dto.UserGroupDto;
 import org.school.app.model.TestBox;
 import org.school.app.model.TestProcess;
+import org.school.app.model.User;
+import org.school.app.service.SyncService;
 import org.school.app.service.TestBoxService;
 import org.school.app.service.TestProcessService;
 import org.school.app.service.skhoolchatbot.UserGroupService;
@@ -32,6 +34,7 @@ public class ManagementController {
 	@Autowired UserGroupService userGroupService;
 	@Autowired TestProcessService testProcessService;
 	@Autowired UserService userService;
+	@Autowired SyncService syncService;
 
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("/v1/tests")
@@ -48,8 +51,8 @@ public class ManagementController {
 	}
 
 	@GetMapping("/v1/sync")
-	public void synchronize(@RequestParam String query) {
-		testBoxService.synchronize(query);
+	public void synchronize(@RequestParam String query, @RequestParam(defaultValue = "TEST") ControllerConstants type) {
+		syncService.synchronize(query, type);
 	}
 
 	@GetMapping("/v1/tests")
@@ -95,6 +98,11 @@ public class ManagementController {
 		userDataDTO.keys = body.keySet();
 
 		userService.updateUser(userDataDTO);
+	}
+
+	@PostMapping("/v1/users")
+	public void createUsers(@RequestBody List<User> users) {
+		userService.createUsers(users);
 	}
 
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
