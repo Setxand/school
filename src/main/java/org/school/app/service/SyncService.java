@@ -49,10 +49,7 @@ public class SyncService {
 				Page<User> users = userService.findAll(pageRequest);
 
 				while (!users.isEmpty()) {
-
-					users.forEach(u -> {
-						restTemplate.postForEntity(query + USERS_QUERY, u, Void.class);
-					});
+					restTemplate.postForEntity(query + USERS_QUERY, users, Void.class);
 
 					users = userService.findAll(pageRequest.next());
 				}
