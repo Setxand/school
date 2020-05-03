@@ -12,6 +12,7 @@ import org.school.app.service.TestBoxService;
 import org.school.app.service.TestProcessService;
 import org.school.app.utils.DictionaryUtil;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import telegram.CallBackQuery;
 import telegram.Message;
 
@@ -129,7 +130,9 @@ public class TestService {
 		TestBox testBox = testBoxService.getTestBox(testProcess.getCurrentTestId());
 
 		if (testProcess.getCurrentTestStep() == testBox.getQuestions().size()) {
-			testEnded(message, testProcess, user.getName());
+			String internalNickName = StringUtils.isEmpty(user.getInternalNickName()) ? "" :
+					" (" + user.getInternalNickName() + " )";
+			testEnded(message, testProcess, user.getName() + internalNickName);
 			user.setStatus(null);
 			return;
 		}
