@@ -2,6 +2,7 @@ package org.school.app.config;
 
 public enum DictionaryKeysConfig {
 
+	BLOCKED_BY_USER,
 	NO_SUCH_USER,
 	ACCESS_RESTRICTED,
 	HELLO_MESSAGE,

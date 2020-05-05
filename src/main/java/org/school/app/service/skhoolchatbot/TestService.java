@@ -1,6 +1,7 @@
 package org.school.app.service.skhoolchatbot;
 
 import org.apache.log4j.Logger;
+import org.school.app.client.Platform;
 import org.school.app.client.TelegramClient;
 import org.school.app.config.DictionaryKeysConfig;
 import org.school.app.exception.BotException;
@@ -14,6 +15,7 @@ import org.school.app.utils.DictionaryUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import telegram.CallBackQuery;
+import telegram.Chat;
 import telegram.Message;
 
 import java.time.LocalDateTime;
@@ -27,6 +29,7 @@ import static org.school.app.utils.DictionaryUtil.getDictionaryValue;
 @Service
 public class TestService {
 
+	private static final CharSequence BLOCKED_BOT_ERR_MESSAGE = "bot was blocked by the user";
 	private final TelegramClient telegramClient;
 	private final TestBoxService testBoxService;
 	private final UserService userService;
@@ -138,10 +141,25 @@ public class TestService {
 		}
 
 		Question question = testBox.getQuestions().get(testProcess.getCurrentTestStep());
-		telegramClient.sendQuestion(question, message, user.getMessageIdToEdit());
+
+		try {
+			telegramClient.sendQuestion(question, message, user.getMessageIdToEdit());
+		} catch (RuntimeException ex) {
+			if (ex.getMessage().contains(BLOCKED_BOT_ERR_MESSAGE)) {
+				Message mes = new Message(new Chat(testProcess.getSenderChatId()));
+				mes.setPlatform(Platform.COMMON);
+
+				String internalNick = StringUtils.isEmpty(user.getInternalNickName()) ? "" :
+						"(" + user.getInternalNickName() + ")";
+				String name = user.getName() + internalNick;
+
+				telegramClient.simpleMessage(String.format(DictionaryUtil
+						.getDictionaryValue(BLOCKED_BY_USER), name), mes);
+			}
+		}
+
 		user.setMessageIdToEdit(null);
 	}
-
 	private String getAnswerVariant(String text) {
 		return text.substring(0, 2);
 	}
