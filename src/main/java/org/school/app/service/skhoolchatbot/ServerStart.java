@@ -1,6 +1,5 @@
 package org.school.app.service.skhoolchatbot;
 
-import org.apache.log4j.Logger;
 import org.school.app.client.TelegramClient;
 import org.school.app.model.TestBox;
 import org.school.app.model.TestProcess;
@@ -22,7 +21,6 @@ public class ServerStart {
 	@Autowired TelegramClient telegramClient;
 	@Autowired TestProcessRepository testProcessRepository;
 	@Autowired TestBoxService testBoxService;
-	private static final Logger log = Logger.getLogger(ServerStart.class);
 
 	@PostConstruct
 	public void setUp() {
@@ -42,7 +40,6 @@ public class ServerStart {
 				}
 			});
 			testProcessRepository.saveAll(all);
-			all = testProcessRepository.findAll(pageRequest.next());
 		}
 
 		telegramClient.setWebHooks();
