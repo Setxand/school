@@ -30,7 +30,8 @@ public class DictionaryUtil {
 	public static String createTestConclusion(TestProcess testProcess, String userName, String languageCode) {
 		String messasge = String.format(DictionaryUtil.getDictionaryValue(
 				DictionaryKeysConfig.TEST_CONCLUSION, languageCode),
-				userName, testProcess.getMark(), testProcess.getCreationTime(), testProcess.getEndTime());
+				userName, testProcess.getMark(), testProcess.getJournalMark(),
+				testProcess.getCreationTime(), testProcess.getEndTime());
 		return messasge;
 	}
 }

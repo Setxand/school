@@ -135,7 +135,7 @@ public class TestService {
 		if (testProcess.getCurrentTestStep() == testBox.getQuestions().size()) {
 			String internalNickName = StringUtils.isEmpty(user.getInternalNickName()) ? "" :
 					" (" + user.getInternalNickName() + " )";
-			testEnded(message, testProcess, user.getName() + internalNickName);
+			testEnded(message, testProcess, user.getName() + internalNickName, testBox.getQuestions().size());
 			user.setStatus(null);
 			return;
 		}
@@ -164,12 +164,13 @@ public class TestService {
 		return text.substring(0, 2);
 	}
 
-	private void testEnded(Message message, TestProcess testProcess, String userName) {
+	private void testEnded(Message message, TestProcess testProcess, String userName, int countOfQuestions) {
 		String testEndedMessage = String.format(DictionaryUtil
 				.getDictionaryValue(TEST_ENDED, message.getFrom().getLanguageCode()), testProcess.getMark());
 
 		telegramClient.editMessageText(null, message, testEndedMessage);
 
+		testProcess.setJournalMark((testProcess.getMark() * 12) / countOfQuestions);
 		testProcess.setActive(false);
 		testProcess.setEndTime(LocalDateTime.now());
 

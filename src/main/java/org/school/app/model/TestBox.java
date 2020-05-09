@@ -16,7 +16,7 @@ public class TestBox extends BaseEntity{
 	private String id;
 	private String name;
 
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private List<Question> questions = new ArrayList<>();
 
 	public String getId() {

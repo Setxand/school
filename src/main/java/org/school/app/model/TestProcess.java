@@ -30,6 +30,7 @@ public class TestProcess {
 	private String currentTestId;
 	private int currentTestStep;
 	private int mark;
+	private int journalMark;
 	private Boolean active = false;
 
 	private LocalDateTime creationTime = LocalDateTime.now();

@@ -89,6 +89,7 @@ public class ManagementController {
 		return testProcessesModels.map(tp -> {
 			TestProcessDTO testProcessDTO = DtoUtil.testProcess(tp);
 			testProcessDTO.testName = testBoxMap.get(tp.getCurrentTestId());
+			testProcessDTO.journalMark = tp.getJournalMark();
 			return testProcessDTO;
 		});
 	}
