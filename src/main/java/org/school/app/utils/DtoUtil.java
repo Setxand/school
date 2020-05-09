@@ -27,8 +27,8 @@ public class DtoUtil {
 		return dto;
 	}
 
-	public static UserGroupDto userGroup(UserGroup userGroup) {
-		UserGroupDto dto = new UserGroupDto();
+	public static UserGroupDTO userGroup(UserGroup userGroup) {
+		UserGroupDTO dto = new UserGroupDTO();
 		dto.id = userGroup.getId();
 		dto.name = userGroup.getName();
 		dto.users = userGroup.getUsers().stream().map(DtoUtil::user).collect(Collectors.toList());

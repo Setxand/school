@@ -2,7 +2,7 @@ package org.school.app.dto;
 
 import java.util.List;
 
-public class UserGroupDto {
+public class UserGroupDTO {
 
 	public String id;
 	public String name;

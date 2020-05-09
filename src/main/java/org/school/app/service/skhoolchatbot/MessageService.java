@@ -12,6 +12,8 @@ import static org.school.app.model.User.UserStatus.*;
 @Service
 public class MessageService {
 
+	private static final CharSequence SLASH = "/";
+
 	private final CommandService commandService;
 	private final TestService testService;
 	private final UserGroupService userGroupService;
@@ -27,7 +29,7 @@ public class MessageService {
 
 	@Transactional
 	public void messageFromBot(Message message, User user) {
-		if (message.getText().contains("/")) {
+		if (message.getText().contains(SLASH)) {
 			user.setStatus(null);
 			commandService.commandToBot(message, user);
 
@@ -44,7 +46,7 @@ public class MessageService {
 				break;
 
 			case TYPE_NAME_USTATUS:
-				typeNameSendTest(message, user);
+				userGroupService.sendUserNamesByName(message, user);
 				break;
 
 			case TYPE_TEST_BOX_FOR_USER_USTATUS:
@@ -95,9 +97,4 @@ public class MessageService {
 		user.setAssigneeTestChatId(null);
 		sendActionService.sendGroupNamesForUsers(message, user, SEND_TEST_TO_CLASS_STATUS2);
 	}
-
-	private void typeNameSendTest(Message message, User user) {
-		userGroupService.sendUserNamesByName(message, user);
-	}
-
 }

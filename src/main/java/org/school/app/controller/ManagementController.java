@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.school.app.dto.TestBoxDTO;
 import org.school.app.dto.TestProcessDTO;
 import org.school.app.dto.UserDataDTO;
-import org.school.app.dto.UserGroupDto;
+import org.school.app.dto.UserGroupDTO;
 import org.school.app.model.TestBox;
 import org.school.app.model.TestProcess;
 import org.school.app.model.User;
@@ -74,7 +74,7 @@ public class ManagementController {
 	}
 
 	@GetMapping("/v1/user-groups")
-	public Page<UserGroupDto> userGroups(Pageable pageable) {
+	public Page<UserGroupDTO> userGroups(Pageable pageable) {
 		return userGroupService.getUserGroups(pageable).map(DtoUtil::userGroup);
 	}
 

@@ -20,6 +20,7 @@ public class UserService {
 
 
 	private static final String INVALID_USER_ID = "Invalid user ID";
+	private static final String NICKNAME_KEY = "nickName";
 
 	private final Integer ADMIN_ID;
 	private final UserRepository userRepository;
@@ -57,7 +58,7 @@ public class UserService {
 	public void updateUser(UserDataDTO userDataDTO) {
 		User user = getUser(userDataDTO.id);
 
-		if (userDataDTO.keys.contains("nickName")) {
+		if (userDataDTO.keys.contains(NICKNAME_KEY)) {
 			user.setInternalNickName(userDataDTO.nickName);
 		}
 	}

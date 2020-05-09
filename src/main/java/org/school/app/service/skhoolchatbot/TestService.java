@@ -30,12 +30,17 @@ import static org.school.app.utils.DictionaryUtil.getDictionaryValue;
 public class TestService {
 
 	private static final CharSequence BLOCKED_BOT_ERR_MESSAGE = "bot was blocked by the user";
+	private static final Object MESSAGE_IS_NOT_CLEAR = "MESSAGE ID TO EDIT MUST BE CLEAR BUT IT ISN'T";
+	private static final String EMPTY_STRING = "";
+	private static final String RIGHT_BRACE = ")";
+	private static final String LEFT_BRACE = "(";
+
+	private static final Logger logger = Logger.getLogger(TestService.class);
+
 	private final TelegramClient telegramClient;
 	private final TestBoxService testBoxService;
 	private final UserService userService;
 	private final TestProcessService testProcessService;
-
-	private static final Logger logger = Logger.getLogger(TestService.class);
 
 	public TestService(TelegramClient telegramClient, TestBoxService testBoxService, UserService userService,
 					   TestProcessService testProcessService) {
@@ -66,7 +71,6 @@ public class TestService {
 	}
 
 	/**
-	 *
 	 * @param user - user, which is a receiver of the message (can be used for '/starttest' and '/sendtest')
 	 *             in case of '/sendtest' user - receiver of thmessage, and it's redirected in previous method
 	 *             'public void chooseTestBoxForUser(CallBackQuery callBackQuery, User user)' in the @param message.
@@ -99,7 +103,7 @@ public class TestService {
 		Message message = callBackQuery.getMessage();
 
 		if (assigneeUser.getMessageIdToEdit() != null) {
-			logger.warn("MESSAGE ID TO EDIT MUST BE CLEAR BUT IT ISN'T");
+			logger.warn(MESSAGE_IS_NOT_CLEAR);
 			assigneeUser.setMessageIdToEdit(null);
 		}
 
@@ -125,7 +129,9 @@ public class TestService {
 		if (user.getMessageIdToEdit() != null) {
 			telegramClient.editInlineButtons(null, message);
 		}
-		message.getChat().setId(user.getChatId()); // Destination to user, that is set to the method
+
+		// Destination to user, that is set to the method
+		message.getChat().setId(user.getChatId());
 	}
 
 	private void nextQuestion(Message message, User user) {
@@ -140,26 +146,32 @@ public class TestService {
 			return;
 		}
 
+		sendQuestion(message, user, testBox, testProcess);
+
+		user.setMessageIdToEdit(null);
+	}
+
+	private void sendQuestion(Message message, User user, TestBox testBox, TestProcess testProcess) {
 		Question question = testBox.getQuestions().get(testProcess.getCurrentTestStep());
 
 		try {
 			telegramClient.sendQuestion(question, message, user.getMessageIdToEdit());
+
 		} catch (RuntimeException ex) {
 			if (ex.getMessage().contains(BLOCKED_BOT_ERR_MESSAGE)) {
 				Message mes = new Message(new Chat(testProcess.getSenderChatId()));
 				mes.setPlatform(Platform.COMMON);
 
-				String internalNick = StringUtils.isEmpty(user.getInternalNickName()) ? "" :
-						"(" + user.getInternalNickName() + ")";
+				String internalNick = StringUtils.isEmpty(user.getInternalNickName()) ? EMPTY_STRING :
+						LEFT_BRACE + user.getInternalNickName() + RIGHT_BRACE;
 				String name = user.getName() + internalNick;
 
 				telegramClient.simpleMessage(String.format(DictionaryUtil
 						.getDictionaryValue(BLOCKED_BY_USER), name), mes);
 			}
 		}
-
-		user.setMessageIdToEdit(null);
 	}
+
 	private String getAnswerVariant(String text) {
 		return text.substring(0, 2);
 	}

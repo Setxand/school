@@ -2,7 +2,6 @@ package org.school.app.service.skhoolchatbot;
 
 import org.school.app.exception.BotException;
 import org.school.app.model.User;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import telegram.Message;
 import telegram.client.TelegramClient;
@@ -20,6 +19,8 @@ import static org.school.app.utils.DictionaryUtil.getDictionaryValue;
 @Service
 public class CommandService {
 
+	private static final Set<Integer> ADMINS = new HashSet<>(Arrays.asList(968840961, 388073901));
+
 	public interface TelegramCommands {
 
 		public static final String START = "/start";
@@ -31,14 +32,10 @@ public class CommandService {
 		public static final String REMOVE_CLASS = "/removeclass";
 		public static final String SEND_TEST_TO_CLASS = "/sendtesttoclass";
 	}
-
 	private final TelegramClient telegramClient;
 	private final TestService testService;
 	private final UserGroupService userGroupService;
 	private final SendActionService sendActionService;
-	private static final Set<Integer> ADMINS = new HashSet<>(Arrays.asList(968840961, 388073901));
-
-	@Value("${id.admin}") private String adminId;
 
 	public CommandService(TelegramClient telegramClient, TestService testService, UserGroupService userGroupService,
 						  SendActionService sendActionService) {
@@ -53,19 +50,18 @@ public class CommandService {
 		user.setStatus(null);
 		String command = message.getText();
 
-		if (!(ADMINS.contains(message.getChat().getId()))  &&
+		if (!(ADMINS.contains(message.getChat().getId())) &&
 				!command.equals(TelegramCommands.START)) {
 			throw new BotException(ACCESS_RESTRICTED, message);
 		}
 
 		switch (command) {
 			case TelegramCommands.START:
-				start(message, user);
+				telegramClient.helloMessage(message);
 				break;
 
 			case TelegramCommands.START_TEST:
-				startTest(message, user);
-
+				testService.startTest(message, user, TYPE_TEST_BOX_USTATUS);
 				break;
 
 			case TelegramCommands.SEND_TEST:
@@ -97,13 +93,4 @@ public class CommandService {
 						message.getFrom().getLanguageCode()), message);
 		}
 	}
-
-	private void startTest(Message message, User user) {
-		testService.startTest(message, user, TYPE_TEST_BOX_USTATUS);
-	}
-
-	private void start(Message message, User user) {
-		telegramClient.helloMessage(message);
-	}
-
 }

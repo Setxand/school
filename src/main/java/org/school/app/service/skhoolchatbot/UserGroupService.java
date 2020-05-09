@@ -25,6 +25,8 @@ import static org.school.app.utils.DictionaryUtil.getDictionaryValue;
 @Service
 public class UserGroupService implements GroupServiceConstants {
 
+	private static final Object MESSAGE_ID_MUST_BE_CLEAR = "MESSAGE ID TO EDIT MUST BE CLEAR BEFORE";
+
 	private final UserService userService;
 	private final TelegramClient telegramClient;
 	private final UserGroupRepository userGroupRepo;
@@ -43,7 +45,8 @@ public class UserGroupService implements GroupServiceConstants {
 	}
 
 	public void sendUserNamesByName(Message message, User user) {
-		user.setAssigneeTestChatId(null); //Clear for new user assignment
+		//Clear for new user assignment
+		user.setAssigneeTestChatId(null);
 
 		List<User> users = userService.searchUsersByName(message.getText()).getContent();
 
@@ -109,7 +112,7 @@ public class UserGroupService implements GroupServiceConstants {
 
 		userGroup.getUsers().forEach(u -> {
 			if (u.getMessageIdToEdit() != null) { ///TODO fix
-				logger.warn("MESSAGE ID TO EDIT MUST BE CLEAR BEFORE");
+				logger.warn(MESSAGE_ID_MUST_BE_CLEAR);
 				u.setMessageIdToEdit(null);
 			}
 			Message message = new Message(new Chat(user.getChatId()));
