@@ -80,7 +80,7 @@ public class TestBoxService {
 	private Question createQuestion(QuestionDTO q) {
 		Question question = new Question();
 		question.setName(q.name);
-		question.setCorrectAnswer(q.correctAnswer);
+		question.setCorrectAnswer(q.correctAnswer.trim());
 		question.setAnswers(q.answers);
 
 		return question;

@@ -1,15 +1,20 @@
 package org.school.app.service.skhoolchatbot;
 
 import org.school.app.client.TelegramClient;
+import org.school.app.model.Question;
+import org.school.app.repository.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.util.List;
 
 @Component
 public class ServerStart {
 
 	@Autowired TelegramClient telegramClient;
+	@Autowired
+	QuestionRepository questionRepository;
 
 	@PostConstruct
 	public void setUp() {
@@ -30,6 +35,12 @@ public class ServerStart {
 //			});
 //			testProcessRepository.saveAll(all);
 //		}
+
+		List<Question> all = questionRepository.findAll();
+		all.forEach(a -> {
+			a.setCorrectAnswer(a.getCorrectAnswer().trim());
+		});
+		questionRepository.saveAll(all);
 
 		telegramClient.setWebHooks();
 	}
